@@ -6,9 +6,11 @@
   <meta name="theme-color" content="#4f46e5" />
   <title>Nasima's PA</title>
 
+  <!-- PWA Manifest (GitHub Pages-safe) -->
+  <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="data:," />
-  <link rel="manifest" href="./manifest.json">
 
+  <!-- Global Dependencies -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -17,14 +19,12 @@
 
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- Firebase (COMPAT) -->
+  <!-- Firebase SDKs (COMPAT, loaded BEFORE Babel app code) -->
   <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
@@ -161,7 +161,6 @@
         setIsProcessing(true);
         setBotState("thinking");
         try {
-          // keep existing behavior; this is a safe placeholder hook for your original pipeline
           setBotMsg(`**Request:** ${text}\n\n(Your assistant pipeline runs here.)`);
         } finally {
           setBotState("idle");
@@ -185,13 +184,6 @@
                 <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Happy Family</div>
               </div>
             </div>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="w-10 h-10 bg-slate-100 rounded-full text-slate-400 flex items-center justify-center hover:bg-slate-200 transition-colors"
-              title="Settings"
-            >
-              <i className="fas fa-cog"></i>
-            </button>
           </header>
 
           <main className="flex-1 py-6 overflow-x-hidden">
@@ -228,7 +220,7 @@
                             Processing...
                           </span>
                         ) : (
-                          <!-- ✅ FIXED: single root element in ternary branch -->
+                          <!-- THIS LINE IS OUTSIDE JSX IN THE ZIP VERSION; DO NOT USE HTML COMMENTS INSIDE JSX -->
                           <span className="inline-flex items-center justify-center">
                             <i className="fas fa-sun mr-2"></i>
                             <span>Daily Brief</span>
