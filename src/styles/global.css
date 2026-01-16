@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@700;800&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 100%);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1, h2, h3, button, .font-nunito { font-family: 'Nunito', sans-serif; }
+
+.dashboard-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  border: 1px solid #f1f5f9;
+}
+
+/* --- FAMILY COLORS --- */
+.family-nasima { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+.family-suhayl { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+.family-rayhaan { background: linear-gradient(135deg, #10b981, #34d399); color: white; }
+.family-zaara { background: linear-gradient(135deg, #f472b6, #ec4899); color: white; }
+.family-jabu { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; }
+.family-lisa { background: linear-gradient(135deg, #f87171, #ef4444); color: white; }
+
+/* --- ANIMATIONS --- */
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+.animate-wiggle { animation: wiggle 2s ease-in-out infinite; transform-origin: bottom center; }
+
+@keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+.animate-blink { animation: blink 3s infinite; transform-origin: center; }
+
+.pb-safe-nav { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+
+.ai-response strong { color: #4f46e5; font-weight: 800; }
+.ai-response ul { list-style: none; padding: 0; }
+.ai-response li { margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem; }
+.ai-response li::before { content: "✨"; position: absolute; left: 0; color: #fbbf24; }
+
+.kitchen-mode { background: #111827; color: white; }
+.kitchen-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+
+.loading-spinner { 
+  border: 4px solid rgba(79, 70, 229, 0.2);
+  border-top: 4px solid #4f46e5;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.security-warning {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+}
