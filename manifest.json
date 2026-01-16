@@ -1,22 +1,26 @@
 {
   "name": "Nasima's PA",
   "short_name": "Nasima PA",
-  "start_url": ".",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f0f9ff",
   "theme_color": "#4f46e5",
   "share_target": {
-    "action": "/",
+    "action": "./",
     "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
     "params": {
       "title": "title",
       "text": "text",
       "url": "url"
     }
   },
-  "icons": [{
-    "src": "https://placehold.co/192x192/4f46e5/white?text=PA",
-    "sizes": "192x192",
-    "type": "image/png"
-  }]
+  "icons": [
+    {
+      "src": "https://placehold.co/192x192/4f46e5/white?text=PA",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
 }
