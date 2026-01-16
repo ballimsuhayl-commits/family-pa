@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#4f46e5">
 <title>Nasima's PA</title>
 <link rel="icon" href="data:,">
-<!-- PWA Manifest -->
+<!-- PWA Manifest (GitHub Pages-safe) -->
 <link rel="manifest" href="./manifest.json">
 <!-- Global Dependencies -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +20,6 @@
 <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@700;800&display=swap');
 body {
@@ -180,10 +179,6 @@ class DataService {
         { id: 'lisa', name: 'Lisa', letter: 'L', status: 'Helping', style: 'family-lisa', stars: 0 },
       ]));
     }
-  }
-
-  cleanup() {
-    // no-op: reserved for future realtime listeners
   }
   
   getFamilyStatus() { 
@@ -383,7 +378,9 @@ const SettingsModal = ({ onClose }) => {
       if (fbConfig.trim()) {
         try {
           const config = JSON.parse(fbConfig.trim());
-          if (!firebase.apps.length) firebase.initializeApp(config);
+          if (!firebase.apps.length) {
+            firebase.initializeApp(config);
+          }
           
           const testDb = firebase.firestore();
           await testDb.collection('test').doc('connection').set({ 
@@ -451,16 +448,16 @@ const SettingsModal = ({ onClose }) => {
             className={`flex-1 ${isTesting ? 'bg-slate-400' : 'bg-blue-500'} text-white py-3 rounded-2xl font-bold`}
           >
             {isTesting ? (
-            <span className="flex items-center justify-center">
-              <span className="loading-spinner mr-2"></span>
-              <span>Testing...</span>
-            </span>
-          ) : (
-            <span className="flex items-center justify-center">
-              <i className="fas fa-plug mr-2"></i>
-              <span>Test Connection</span>
-            </span>
-          )}
+              <span className="flex items-center justify-center">
+                <span className="loading-spinner mr-2"></span>
+                <span>Testing...</span>
+              </span>
+            ) : (
+              <span className="flex items-center justify-center">
+                <i className="fas fa-plug mr-2"></i>
+                <span>Test Connection</span>
+              </span>
+            )}
           </button>
           <button 
             onClick={save} 
