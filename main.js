@@ -101,10 +101,10 @@ function SettingsModal({open,onClose,fb,me,isAdmin,adminsCount,refreshAdmins}) {
 
   function saveConfigNow(){
     setMsg("");
-    try{ saveCfg(JSON.parse(cfgText)); setMsg("Saved. Reloading…"); setTimeout(()=>location.reload(), 350); }
+    try{ saveCfg(JSON.parse(cfgText)); setMsg("Saved. Reloading?"); setTimeout(()=>location.reload(), 350); }
     catch{ setMsg("Config JSON not valid."); }
   }
-  function clearConfigNow(){ clearCfg(); setMsg("Cleared. Reloading…"); setTimeout(()=>location.reload(), 350); }
+  function clearConfigNow(){ clearCfg(); setMsg("Cleared. Reloading?"); setTimeout(()=>location.reload(), 350); }
 
   async function login(){ if(!fb) return; setBusy(true); setMsg("");
     try{ await signInWithEmailAndPassword(fb.auth, email, pass); setMsg("Signed in."); }
@@ -133,7 +133,7 @@ function SettingsModal({open,onClose,fb,me,isAdmin,adminsCount,refreshAdmins}) {
       React.createElement("div", {className:"cardTitle"}, 
         React.createElement("div", null,
           React.createElement("h2", null, "Settings"),
-          React.createElement("div", {className:"small"}, "Connect Firebase • Login • Admin slots")
+          React.createElement("div", {className:"small"}, "Connect Firebase ? Login ? Admin slots")
         ),
         React.createElement("button", {className:"btn btnGhost", onClick:onClose}, "Close")
       ),
@@ -143,7 +143,7 @@ function SettingsModal({open,onClose,fb,me,isAdmin,adminsCount,refreshAdmins}) {
         React.createElement("button", {className:`tab ${tab==="admin"?"tabActive":""}`, onClick:()=>setTab("admin")}, "Admin")
       ),
       React.createElement("div", {className:"divider"}),
-      React.createElement("div", {className:"small"}, "Role: ", React.createElement("b", null, role), me?` • ${me.email||me.uid}`:""),
+      React.createElement("div", {className:"small"}, "Role: ", React.createElement("b", null, role), me?` ? ${me.email||me.uid}`:""),
 
       tab==="firebase" ? React.createElement("div", {style:{marginTop:12}},
         React.createElement("div", {className:"small", style:{marginBottom:8}}, "Paste Firebase Web App config JSON (public)."),
@@ -273,7 +273,7 @@ const [adding,setAdding]=useState(false);
         React.createElement("div", {className:"mascotWrap"},
           React.createElement(Mascot, null),
           React.createElement("div", null,
-            React.createElement("div", {style:{fontWeight:800,fontSize:16}}, "Hi — I’m Rosie."),
+            React.createElement("div", {style:{fontWeight:800,fontSize:16}}, "Hi ? I?m Rosie."),
             React.createElement("div", {className:"small"}, "Admins can ask me for summaries and help. Family can update their own status.")
           )
         ),
@@ -282,16 +282,16 @@ const [adding,setAdding]=useState(false);
             className:"input",
             value:prompt,
             onChange:e=>setPrompt(e.target.value),
-            placeholder:"Ask Rosie…",
+            placeholder:"Ask Rosie?",
             onKeyDown:e=>{ if(e.key==="Enter") ask(); }
           }),
-          React.createElement("button", {className:"btn btnPrimary", onClick:ask, disabled:busy}, busy ? "Thinking…" : "Ask")
+          React.createElement("button", {className:"btn btnPrimary", onClick:ask, disabled:busy}, busy ? "Thinking?" : "Ask")
         ),
         answer ? React.createElement("div", {className:"card", style:{marginTop:12, background:"rgba(0,0,0,.18)"}},
           React.createElement("div", {className:"small"}, "Reply"),
           React.createElement("div", {style:{whiteSpace:"pre-wrap", marginTop:6}}, answer)
         ) : null,
-        (adminErr || meErr || dirErr) ? React.createElement("div", {className:"small", style:{marginTop:10}}, adminErr || meErr || dirErr) : null
+        (adminErr || meErr || dirErr || dirErr) ? React.createElement("div", {className:"small", style:{marginTop:10}}, adminErr || meErr || dirErr) : null
       ),
 
       React.createElement("div", {className:"card"},
@@ -312,16 +312,16 @@ const [adding,setAdding]=useState(false);
             className: \"input\",
             value: newPerson,
             onChange: e => setNewPerson(e.target.value),
-            placeholder: \"Add person (e.g., Grandma Aisha)…\"
+            placeholder: \"Add person (e.g., Grandma Aisha)?\"
           }),
           React.createElement(\"button\", { className: \"btn btnPrimary\", onClick: addPerson, disabled: adding || !newPerson.trim() },
-            adding ? \"Adding…\" : \"Add\"
+            adding ? \"Adding?\" : \"Add\"
           )
         ) : null,
         React.createElement("div", {className:"divider"}),
         React.createElement("div", {style:{display:"grid", gap:10}},
           React.createElement("div", {className:"small"}, "My Status"),
-          React.createElement("div", null, "Current: ", React.createElement("b", null, meDoc?.status || "—")),
+          React.createElement("div", null, "Current: ", React.createElement("b", null, meDoc?.status || "?")),
           React.createElement("div", {className:"row"},
             ...STATUS.map(s => React.createElement("button", {
               key:s,
