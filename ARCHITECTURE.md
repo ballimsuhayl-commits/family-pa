@@ -1,26 +1,23 @@
-# ARCHITECTURE
+# Architecture
 
-## Goal
-Minimize user effort: Nasima speaks, Rosie files.
+## Frontend (GitHub Pages)
+- Pure static PWA (Android-first)
+- Entry: `index.html` → `main.js` → `app.js`
+- Data: `localStorage` via `lib/store.js`
+- Voice dictation: Web Speech API (where available)
 
-## Frontend (Static)
-- `index.html` loads `main.js` (ES modules) and `styles.css`
-- Hash-router (`#/calendar`, etc.) to work on GitHub Pages
-- State: `localStorage` (single JSON document)
+## WhatsApp Bridge (optional, Dad setup once)
+Static sites cannot receive WhatsApp messages. When enabled:
+- WhatsApp → webhook (Cloudflare Worker) → `feed` endpoint
+- Rosie app polls the feed and auto-files messages locally
+- Rosie can ask the bridge to send WhatsApp nudges/reminders to parents/staff
 
-## Key modules
-- `src/app.js`
-  - data model + storage
-  - `.ics` parsing
-  - voice parsing (routing into groceries/tasks/calendar/status)
-- `main.js`
-  - UI rendering (DOM)
-  - voice dictation + audio note capture
-  - reminder tick (every minute)
+No secrets are stored in the browser besides the **Bridge token** (a long random string).
+WhatsApp API credentials live only in the Worker environment.
 
-## Why no React/Vite here
-GitHub Pages errors occurred because it served `index.html` that referenced `/src/main.tsx`. This stack avoids that entire class of deployment failures.
-
-
-## Optional WhatsApp bridge
-The static UI can poll a private "Rosie Brain" webhook service (e.g., Cloudflare Worker) to ingest WhatsApp messages and auto-file them.
+## Data model (summary)
+- `family[]`
+- `inbox[]` (WhatsApp + voice note intake)
+- `calendar.events[]`
+- `tasks[]`
+- `groceries.items[]`

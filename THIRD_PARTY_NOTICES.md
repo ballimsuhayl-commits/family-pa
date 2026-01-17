@@ -1,3 +1,2 @@
-# THIRD_PARTY_NOTICES
-
-This build uses **no third-party libraries** in the browser bundle.
+This project uses only browser-native APIs and no third-party runtime libraries.
+Icons and mascot are original SVG.

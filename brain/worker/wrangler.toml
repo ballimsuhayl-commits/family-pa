@@ -1,13 +1,12 @@
-name = "rosie-brain"
+name = "rosie-brain-worker"
 main = "src/index.js"
-compatibility_date = "2025-12-01"
+compatibility_date = "2025-01-01"
 
-# Bindings
-kv_namespaces = [
-  { binding = "ROSIE_KV", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
-]
+# Enable a cron to send reminders (optional)
+[triggers]
+crons = ["*/5 * * * *"]
 
-[vars]
-# Comma-separated list of allowed origins for CORS, e.g.
-# ALLOWED_ORIGINS = "https://ballimsuhayl-commits.github.io"
-ALLOWED_ORIGINS = ""
+# KV namespace for message storage (create in Cloudflare dashboard and paste id)
+# [[kv_namespaces]]
+# binding = "ROSIE_KV"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

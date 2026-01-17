@@ -1,31 +1,35 @@
-# Rosie — Family Assistant (GitHub Pages Safe)
+# Rosie – Family Assistant (Android-first, GitHub Pages safe)
 
-Rosie is a mobile-first family assistant designed to reduce mental load: auto-sort voice notes into calendar, chores, groceries, status, and warn early to prevent clashes.
+Rosie reduces the noise of family life:
+- auto-files WhatsApp messages & voice notes into the right place
+- prevents schedule clashes
+- nudges Lisa/Jabu about chores
+- keeps both parents aligned on the day
 
-## Runs on GitHub Pages (no blank screen)
-This repo **does not ship TSX/JSX** and **does not require a build step**. GitHub Pages serves static files directly.
+## Deploy (GitHub Pages)
+This repo is static and **Pages-safe**:
+- `index.html` loads `./main.js` (never `/src/*`)
+- no inline scripts
+- no `eval`
 
-### Deploy
-- GitHub → Settings → Pages
-- Source: Deploy from a branch
-- Branch: `main` / folder: `/(root)`
+**Recommended Pages config**
+- Settings → Pages → Deploy from branch
+- Branch: `main`
+- Folder: `/(root)`
 
-Open: `https://<user>.github.io/family-pa/`
+## Android install (PWA)
+Open the site in Chrome on Android → add to Home Screen (Rosie will also show an install card when available).
 
-## Voice
-- Live dictation uses the browser SpeechRecognition API (Chrome/Edge supported).
-- Voice note recording uses MediaRecorder (permission required).
-- If a browser does not support voice, Rosie still works with typing.
+## WhatsApp Bridge (optional)
+To accept WhatsApp messages and send reminders/instructions, connect the **WhatsApp Bridge**:
+- See `docs/WHATSAPP_HOME_SETUP.md`
+- Paste Bridge URL + token into Rosie → Settings
 
-## School calendar import
-Import `.ics` and Rosie auto-fills the calendar and creates early reminders.
+> Mum does not do setup steps. Suhayl does it once.
 
-## Data
-Stored locally in `localStorage` (export/import in Settings). This can be upgraded later to Firestore without changing the UX.
+## Local development
+Open `index.html` using any static server (recommended). For example:
+- VS Code “Live Server” extension
+- or `python -m http.server 8000`
 
-## Security
-No inline scripts. No eval(). No new Function(). No external CDNs.
-
-
-## WhatsApp (optional)
-See `docs/WHATSAPP_HOME_SETUP.md`.
+Then open `http://localhost:8000/#/home`

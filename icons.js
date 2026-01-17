@@ -1,45 +1,19 @@
-
 export const icons = {
   rosie: `<svg viewBox="0 0 64 64" aria-hidden="true">
-    <defs>
-      <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="rgba(124,58,237,.9)"/>
-        <stop offset="1" stop-color="rgba(236,72,153,.9)"/>
-      </linearGradient>
-    </defs>
-    <rect x="10" y="14" width="44" height="36" rx="16" fill="rgba(255,255,255,.9)" stroke="rgba(124,58,237,.35)" stroke-width="2"/>
-    <circle cx="32" cy="32" r="14" fill="rgba(17,24,39,.95)"/>
-    <circle cx="26" cy="30" r="4" fill="white"/>
-    <circle cx="38" cy="30" r="4" fill="white"/>
-    <path d="M26 39c3 4 9 4 12 0" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M14 28c-5 2-5 10 0 12" stroke="rgba(124,58,237,.45)" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <path d="M50 28c5 2 5 10 0 12" stroke="rgba(236,72,153,.45)" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <circle cx="32" cy="12" r="3" fill="url(#rg)"/>
+    <rect width="64" height="64" rx="16" fill="#ffe3f6"></rect>
+    <rect x="10" y="18" width="44" height="34" rx="14" fill="#111827"></rect>
+    <circle cx="25" cy="34" r="5" fill="#fff"></circle>
+    <circle cx="39" cy="34" r="5" fill="#fff"></circle>
+    <path d="M24 45c4 5 12 5 16 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"></path>
+    <path d="M32 8v8" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"></path>
+    <circle cx="32" cy="8" r="4" fill="#7c3aed"></circle>
   </svg>`,
-  spark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M12 2l1.5 6L20 12l-6.5 1.8L12 22l-1.5-8.2L4 12l6.5-4z"/>
-  </svg>`,
-  mic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z"/>
-    <path d="M19 11a7 7 0 0 1-14 0"/>
-    <path d="M12 18v4"/>
-  </svg>`,
-  home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>
-  </svg>`,
-  calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M7 3v3M17 3v3"/><path d="M3 9h18"/><path d="M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
-  </svg>`,
-  tasks: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-  </svg>`,
-  cart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6l-2-3H1"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/>
-  </svg>`,
-  inbox: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5 6h14l3 6v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8z"/>
-  </svg>`,
-  gear: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <circle cx="12" cy="12" r="3.5"/><path d="M19.4 15a7.8 7.8 0 0 0 .1-2l2-1.2-2-3.4-2.3.7a8.5 8.5 0 0 0-1.7-1L15 5h-6l-.5 3.1a8.5 8.5 0 0 0-1.7 1L4.5 8.4l-2 3.4 2 1.2a7.8 7.8 0 0 0 .1 2l-2 1.2 2 3.4 2.3-.7a8.5 8.5 0 0 0 1.7 1L9 21h6l.5-3.1a8.5 8.5 0 0 0 1.7-1l2.3.7 2-3.4-2-1.2z"/>
-  </svg>`
+  home: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"/></svg>`,
+  cal: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3v18H4V4h3zm13 6H4v12h16z"/></svg>`,
+  list: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 6h14v2H7V6zM7 11h14v2H7v-2zM7 16h14v2H7v-2zM3 6h2v2H3V6zm0 5h2v2H3v-2zm0 5h2v2H3v-2z"/></svg>`,
+  bag: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 7V6a5 5 0 0 1 10 0v1h4v15H3V7h4zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg>`,
+  settings: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.8 7.8 0 0 0 .06-.94 7.8 7.8 0 0 0-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.2 7.2 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 1h-3.8a.5.5 0 0 0-.5.42l-.36 2.54a7.2 7.2 0 0 0-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L1.7 7.02a.5.5 0 0 0 .12.64l2.03 1.58a7.8 7.8 0 0 0-.06.94c0 .32.02.63.06.94L1.82 14.52a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.5.38 1.05.7 1.63.94l.36 2.54a.5.5 0 0 0 .5.42h3.8a.5.5 0 0 0 .5-.42l.36-2.54c.58-.24 1.12-.56 1.63-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5z"/></svg>`,
+  mic: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>`,
+  inbox: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 11h-4l-2 3h-2l-2-3H5V5h14v9z"/></svg>`,
+  send: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>`
 };
