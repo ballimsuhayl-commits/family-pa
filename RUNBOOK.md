@@ -1,20 +1,20 @@
-# Runbook
+# RUNBOOK
 
-## Smoke test
-```bash
-npm ci
-npm run lint
-npm run test
-npm run build
-npm run preview
-```
+## Common issues
 
-## GitHub Pages blank page troubleshooting
-If you see 404 for `src/main.tsx` on the live site:
-- You are serving source instead of built `dist`.
-- Ensure Pages source is **gh-pages** branch.
-- Ensure the GitHub Action ran successfully.
+### Blank screen / main.tsx 404
+This should never happen with this repo. Confirm `index.html` contains:
+`<script type="module" src="./main.js"></script>`
 
-## Voice troubleshooting
-- Use Chrome on Android for best SpeechRecognition support.
-- If you get microphone permission errors, check site permissions.
+### Voice not working
+- Ensure browser supports SpeechRecognition (Chrome/Edge).
+- Allow microphone permissions.
+- If unsupported: type into the “Tell Rosie” box.
+
+### Importing .ics
+Use Calendar tab → Import.
+If assignments are wrong, adjust rules in Settings (JSON).
+
+## Backup / restore
+Settings → Export JSON
+Settings → Import JSON

@@ -1,8 +1,3 @@
-# Third Party Notices
+# THIRD_PARTY_NOTICES
 
-- React (MIT)
-- Vite (MIT)
-- Zod (MIT)
-- Vitest (MIT)
-- Playwright (Apache-2.0)
-- GitHub Pages Deploy Action (MIT)
+This build uses **no third-party libraries** in the browser bundle.

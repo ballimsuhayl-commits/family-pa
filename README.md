@@ -1,36 +1,27 @@
-# Rosie – Family Assistant (GitHub Pages)
+# Rosie — Family Assistant (GitHub Pages Safe)
 
-Rosie is a mobile-first family assistant designed to reduce admin “mental load”:
-- voice-first capture (“Tell Rosie”)
-- auto-sorts into Calendar / Tasks (Lisa/Jabu) / Groceries / Status
-- clash detection + early reminders
-- static hosting compatible (GitHub Pages)
+Rosie is a mobile-first family assistant designed to reduce mental load: auto-sort voice notes into calendar, chores, groceries, status, and warn early to prevent clashes.
 
-## Quick start (local)
-Requirements: Node 20+
+## Runs on GitHub Pages (no blank screen)
+This repo **does not ship TSX/JSX** and **does not require a build step**. GitHub Pages serves static files directly.
 
-```bash
-npm ci
-npm run dev
-```
+### Deploy
+- GitHub → Settings → Pages
+- Source: Deploy from a branch
+- Branch: `main` / folder: `/(root)`
 
-## Deploy to GitHub Pages
-1. Push to `main`
-2. Repo → Settings → Pages → **Source: GitHub Actions**
-3. The workflow builds and deploys automatically.
+Open: `https://<user>.github.io/family-pa/`
 
-## Voice features
-- **Live speech-to-text** uses the browser Web Speech API (best on Chrome/Android).
-- **Voice notes** are recorded with `MediaRecorder` and stored locally (IndexedDB).
-- Optional: hook up a secure transcription gateway (see `docs/RUNBOOK.md`).
+## Voice
+- Live dictation uses the browser SpeechRecognition API (Chrome/Edge supported).
+- Voice note recording uses MediaRecorder (permission required).
+- If a browser does not support voice, Rosie still works with typing.
 
-## Data storage
-Default: local-first (LocalStorage + IndexedDB). Optional shared sync can be added later (e.g., Firestore).
+## School calendar import
+Import `.ics` and Rosie auto-fills the calendar and creates early reminders.
 
-## Scripts
-- `npm run dev` – dev server
-- `npm run build` – production build
-- `npm run preview` – preview build
-- `npm run lint` – lint
-- `npm run test` – unit tests
+## Data
+Stored locally in `localStorage` (export/import in Settings). This can be upgraded later to Firestore without changing the UX.
 
+## Security
+No inline scripts. No eval(). No new Function(). No external CDNs.

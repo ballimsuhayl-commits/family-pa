@@ -1,17 +1,22 @@
-# Architecture
+# ARCHITECTURE
 
-## Constraints
-- GitHub Pages hosting
-- No inline scripts, CSP-safe
-- Mobile-first UX
-- Offline-first (no backend required)
+## Goal
+Minimize user effort: Nasima speaks, Rosie files.
 
-## Modules
-- `src/lib/storage.ts`: persistent state
-- `src/lib/voice.ts`: Web Speech API + MediaRecorder helpers
-- `src/lib/rosieNlu.ts`: lightweight offline command parsing
-- `src/lib/rosieEngine.ts`: applies actions to state
-- `src/ui/*`: React UI
+## Frontend (Static)
+- `index.html` loads `main.js` (ES modules) and `styles.css`
+- Hash-router (`#/calendar`, etc.) to work on GitHub Pages
+- State: `localStorage` (single JSON document)
 
-## Data
-Single JSON state in localStorage keyed by `rosie.state.v6`.
+## Key modules
+- `src/app.js`
+  - data model + storage
+  - `.ics` parsing
+  - voice parsing (routing into groceries/tasks/calendar/status)
+- `main.js`
+  - UI rendering (DOM)
+  - voice dictation + audio note capture
+  - reminder tick (every minute)
+
+## Why no React/Vite here
+GitHub Pages errors occurred because it served `index.html` that referenced `/src/main.tsx`. This stack avoids that entire class of deployment failures.
