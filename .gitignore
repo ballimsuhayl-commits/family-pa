@@ -1,9 +1,5 @@
 node_modules
 dist
-.env
-.firebase
 .DS_Store
-coverage
-functions/node_modules
-functions/lib
-functions/.env
+.env
+.env.local

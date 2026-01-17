@@ -1,32 +1,38 @@
-# Rosie — Full Stack (Static GitHub Pages + Firebase)
+# Rosie – Family Assistant (family-pa)
 
-## Why this version
-- GitHub Pages is static hosting.
-- This frontend is **pure static**: `index.html -> main.js`, so there is **no /src 404** and no build step.
-- UI includes the robot mascot again and a more polished layout.
+A lightweight family assistant web app designed to run **entirely on GitHub Pages** (static hosting only).
 
-## Frontend Go-Live (GitHub Online)
-1. Upload all files in this repo to your GitHub repository root (replace existing).
-2. GitHub -> Settings -> Pages:
-   - Source: GitHub Actions (recommended) OR Deploy from branch (root)
-3. Open: https://<user>.github.io/<repo>/
+## What this is
+- A friendly, light-themed “family board” where each person can set a quick status
+- Admins (Nasima & Suhayl) can see Rosie’s summary
+- Family list is **data-driven** and members are **addable** (not hard-coded only)
+- Uses `localStorage` (per-browser) for now; future backend can be added later
 
-## Backend Go-Live (Firebase)
-1. Firebase Console -> Authentication -> enable Email/Password.
-2. Deploy:
+## Non-negotiables (GitHub Pages safe)
+- No server-side rendering
+- No inline scripts
+- No `eval()` / `new Function()`
+- Production bundle only
+
+## One-click local run
 ```bash
-npm i -g firebase-tools
-firebase login
-firebase use nasima-family-pa
-firebase functions:secrets:set GEMINI_API_KEY
-firebase deploy --only functions,firestore:rules,firestore:indexes
+npm install
+npm run dev
 ```
 
-## In the app
-- Settings -> paste Firebase web config JSON
-- Create/sign in Nasima + Suhayl
-- Settings -> Admin -> Claim Admin Slot (2 total)
+## Build + preview
+```bash
+npm run build
+npm run preview
+```
 
-## Icon 404 sanity check
-If you see `icons/icon.svg 404`, verify the repo contains `icons/icon.svg` and that this URL loads:
-`https://<user>.github.io/<repo>/icons/icon.svg`
+## Deploy to GitHub Pages (recommended)
+1. Push to `main`
+2. GitHub → Settings → Pages → Source: **GitHub Actions**
+3. The workflow in `.github/workflows/deploy-pages.yml` builds and deploys.
+
+## Data model
+See `src/domain.ts`.
+
+## License
+MIT (see `LICENSE`).

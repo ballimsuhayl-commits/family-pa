@@ -1,22 +1,30 @@
 {
-  "name": "rosie-family-pa",
+  "name": "family-pa",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "emulators": "firebase emulators:start --only auth,firestore,functions",
-    "deploy:firebase": "firebase deploy --only functions,firestore:rules,firestore:indexes"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "firebase": "^10.12.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.10.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.2"
+    "eslint": "^9.10.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2",
+    "vitest": "^2.0.5"
   }
 }
