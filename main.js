@@ -8,7 +8,7 @@ import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/10.
 
 const LS_CFG="rosie.firebaseConfig";
 const STATUS=["Available","School","Working","Out","Busy","Sleeping"];
-const DEFAULT_FAMILY = [\"Nasima\",\"Suhayl\",\"Rayhaan\",\"Zaara\",\"Jabu\",\"Lisa\"]; // initial
+const DEFAULT_FAMILY = ["Nasima","Suhayl","Rayhaan","Zaara","Jabu","Lisa"]; // initial
 
 function loadCfg(){ try{ const r=localStorage.getItem(LS_CFG); return r?JSON.parse(r):null; }catch{ return null; } }
 function saveCfg(cfg){ localStorage.setItem(LS_CFG, JSON.stringify(cfg)); }
@@ -307,15 +307,15 @@ const [adding,setAdding]=useState(false);
             onClick:()=>setSelectedMember(t)
           }, t))
         ),
-        isAdmin ? React.createElement(\"div\", { className: \"row\", style: { marginTop: 10 } },
-          React.createElement(\"input\", {
-            className: \"input\",
+        isAdmin ? React.createElement("div", { className: "row", style: { marginTop: 10 } },
+          React.createElement("input", {
+            className: "input",
             value: newPerson,
             onChange: e => setNewPerson(e.target.value),
-            placeholder: \"Add person (e.g., Grandma Aisha)…\"
+            placeholder: "Add person (e.g., Grandma Aisha)…"
           }),
-          React.createElement(\"button\", { className: \"btn btnPrimary\", onClick: addPerson, disabled: adding || !newPerson.trim() },
-            adding ? \"Adding…\" : \"Add\"
+          React.createElement("button", { className: "btn btnPrimary", onClick: addPerson, disabled: adding || !newPerson.trim() },
+            adding ? "Adding…" : "Add"
           )
         ) : null,
         React.createElement("div", {className:"divider"}),
