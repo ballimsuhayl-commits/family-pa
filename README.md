@@ -1,19 +1,19 @@
-# Rosie — Full Stack ZIP (GitHub Pages + Firebase)
+# Rosie — Full Stack (Static GitHub Pages + Firebase)
 
-This repo is designed for **GitHub Online deployment**:
-- Frontend is **pure static** (no Vite build needed).
-- Fixes 404 for /src/main.jsx permanently.
-- Works with GitHub Pages "Deploy from branch" OR GitHub Actions.
+## Why this version
+- GitHub Pages is static hosting.
+- This frontend is **pure static**: `index.html -> main.js`, so there is **no /src 404** and no build step.
+- UI includes the robot mascot again and a more polished layout.
 
-## Go Live (Frontend)
-1) Replace your repo contents with the contents of this ZIP.
-2) GitHub -> Settings -> Pages:
-   - Source: Deploy from branch (main / root) OR GitHub Actions
-3) Open your GitHub Pages URL.
+## Frontend Go-Live (GitHub Online)
+1. Upload all files in this repo to your GitHub repository root (replace existing).
+2. GitHub -> Settings -> Pages:
+   - Source: GitHub Actions (recommended) OR Deploy from branch (root)
+3. Open: https://<user>.github.io/<repo>/
 
-## Go Live (Backend)
-1) Firebase Console -> Authentication -> enable Email/Password.
-2) Deploy:
+## Backend Go-Live (Firebase)
+1. Firebase Console -> Authentication -> enable Email/Password.
+2. Deploy:
 ```bash
 npm i -g firebase-tools
 firebase login
@@ -22,6 +22,7 @@ firebase functions:secrets:set GEMINI_API_KEY
 firebase deploy --only functions,firestore:rules,firestore:indexes
 ```
 
-## In the App
+## In the app
 - Settings -> paste Firebase web config JSON
-- Create/sign in Nasima + Suhayl -> Claim Admin Slot (2 total)
+- Create/sign in Nasima + Suhayl
+- Settings -> Admin -> Claim Admin Slot (2 total)

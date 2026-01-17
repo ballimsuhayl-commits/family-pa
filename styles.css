@@ -1,10 +1,107 @@
-:root{color-scheme:dark}*{box-sizing:border-box}
-html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#e5e7eb}
-.container{max-width:1100px;margin:0 auto;padding:16px}
-.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
-.btn{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.10);color:#e5e7eb;cursor:pointer}
-.btn:hover{background:rgba(255,255,255,.14)}.btn:disabled{opacity:.55;cursor:not-allowed}
-.input,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);color:#e5e7eb}
-.row{display:flex;gap:8px;flex-wrap:wrap}.small{font-size:12px;opacity:.75}
-.modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
-.modal{width:min(760px,100%)}
+:root{
+  --bg:#0b1220;
+  --card:#0f1a2f;
+  --card2:#0d1629;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:rgba(255,255,255,.10);
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --radius: 20px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+a{color:inherit}
+.container{max-width:1100px;margin:0 auto;padding:18px}
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:14px;
+}
+.brand{
+  display:flex;align-items:center;gap:12px;
+}
+.logo{
+  width:44px;height:44px;border-radius:14px;
+  background: radial-gradient(circle at top left, rgba(124,58,237,.55), rgba(6,182,212,.35));
+  border:1px solid var(--border);
+  box-shadow: var(--shadow);
+  display:grid;place-items:center;
+}
+.logo svg{width:28px;height:28px}
+.h1{font-size:28px;font-weight:900;letter-spacing:.2px;margin:0}
+.sub{font-size:13px;color:var(--muted);margin-top:2px}
+.actions{display:flex;gap:10px;align-items:center}
+
+.grid{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap:14px;
+}
+@media (max-width: 900px){
+  .grid{grid-template-columns:1fr}
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:16px;
+}
+
+.cardTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.cardTitle h2{margin:0;font-size:18px;font-weight:850}
+.pill{font-size:12px;color:var(--muted);border:1px solid var(--border);padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.15)}
+
+.btn{
+  padding:10px 12px;border-radius:14px;border:1px solid var(--border);
+  background: rgba(255,255,255,.06);
+  color:var(--text);cursor:pointer;font-weight:650;
+}
+.btn:hover{background: rgba(255,255,255,.10)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnPrimary{
+  background: radial-gradient(circle at top left, rgba(124,58,237,.55), rgba(6,182,212,.35));
+  border-color: rgba(255,255,255,.12);
+}
+.btnGhost{background:transparent}
+.input,textarea{
+  width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--border);
+  background: rgba(0,0,0,.22);color:var(--text);outline:none;
+}
+textarea{resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.small{font-size:12px;color:var(--muted)}
+.kbd{
+  font-size:12px;color:var(--muted);border:1px solid var(--border);
+  padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.18)
+}
+
+.mascotWrap{
+  display:flex;gap:14px;align-items:center;
+}
+.mascot{
+  width:76px;height:76px;border-radius:26px;
+  background: radial-gradient(circle at top left, rgba(124,58,237,.50), rgba(6,182,212,.25));
+  border:1px solid var(--border);
+  box-shadow: var(--shadow);
+  display:grid;place-items:center;
+}
+.mascot svg{width:56px;height:56px}
+
+.tabs{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:10px
+}
+.tab{
+  padding:8px 10px;border-radius:14px;border:1px solid var(--border);
+  background: rgba(255,255,255,.04);cursor:pointer;font-weight:650;color:var(--text);
+}
+.tabActive{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.18);
+}
+
+.modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{width:min(820px,100%)}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.toast{margin-top:10px;font-size:13px;color:var(--text)}
