@@ -1,28 +1,26 @@
 # ARCHITECTURE
 
-## Constraints
-- Static hosting on GitHub Pages only.
-- No runtime code that requires `eval` or inline scripts.
-- All logic runs in-browser.
+## Goals
+- Mobile-first, calm UI to reduce overwhelm
+- Works on GitHub Pages as a static site (no server-rendering, no runtime TSX)
+- Data-driven family model (members are editable)
+- Privacy-first: data stored locally on the device by default
 
-## Frontend stack
-- Vite + React + TypeScript
-- Local persistence: `localStorage` (single key, versioned)
-- Accessible, keyboard-friendly UI (focus-visible rings, ARIA labels)
+## Components
+- `index.html` + `styles.css` + `main.js` (ES module)
+- `sw.js` provides offline cache for core assets
+- Storage: `localStorage` (`rosie.familyPa.v1`)
 
-## Domain
-- `Member`: `{ id, name, role }`
-- `MemberStatus`: `{ key, updatedAt, note? }`
-- `AppState`: `{ members[], statuses{} }`
-- Admins are **data-driven** via `role: "admin"`.
+## Data model (high level)
+- `family[]` members (admins are a flag, not hard-coded)
+- `events[]` calendar items (imported or manual)
+- `tasks[]` chores/to-dos with optional assignment + due date
+- `groceries[]` shopping list
+- `chat[]` recent Rosie chat messages
 
-## Security posture (baseline)
-- No secrets stored in repo.
-- No external script imports (reduces supply-chain/CSP issues).
-- GitHub Actions uses least-privilege permissions.
+## AI Integration
+Two modes:
+1) Local Rosie (default): rule-based summaries & guidance.
+2) Gemini prototype mode: direct client-side API call (NOT recommended for production).
 
-## Future backend (optional)
-If you later move beyond per-browser localStorage:
-- Add a small API (e.g., serverless, or a container) to store shared status.
-- Use OIDC login and store user identity -> member mapping.
-- Keep the GitHub Pages frontend as-is; only swap storage layer.
+Production-grade AI integration should use a backend proxy (e.g., Firebase AI Logic) to keep credentials confidential.

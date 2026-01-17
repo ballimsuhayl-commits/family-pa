@@ -1,24 +1,20 @@
 # SECURITY
 
-## Threat model (practical)
-This is a static browser app. Primary risks:
-- Supply-chain risk from dependencies
-- XSS via unsafe HTML injection
-- Data leakage via sharing a device/browser profile
+## CSP / GitHub Pages safety
+This app:
+- Uses **no** `eval()` / `new Function()`
+- Uses **no** inline `<script>` blocks
+- Uses only static assets
 
-## Controls in place
-- No `dangerouslySetInnerHTML`
-- No inline scripts
-- No external script CDNs
-- Minimal dependencies
-- GitHub Actions least privilege permissions for Pages deploy
+## Data
+Default: stored locally in `localStorage`.
+- Anyone with access to the device/browser profile can read it.
+- Use **Export JSON** for backups.
 
-## Recommended next hardening steps
-- Enable Dependabot
-- Add CodeQL workflow
-- Pin Node version in `.nvmrc` (optional)
-- Add a simple CSP via a static `headers` solution (GitHub Pages cannot set headers directly; would require a CDN like Cloudflare if desired)
+## Gemini API keys
+If you enable Gemini prototype mode, the key is stored in `localStorage` and can be extracted from the browser.
+This is **not secure** for production.
+Use a server-side proxy / Firebase AI Logic for production.
 
-## Privacy note
-This version stores data in `localStorage` per browser only.
-Do not treat it as private or shared across devices.
+## Dependencies
+No external JS libraries are loaded from CDNs.

@@ -1,60 +1,40 @@
-# Rosie – Family Assistant (GitHub Pages Fix)
+# Rosie – Family Assistant (GitHub Pages)
 
-This repo includes **two ways** to run Rosie:
+Rosie is a **mobile-first** family assistant that reduces the “mental load”:
+- Calendar import (school `.ics`) + reminders
+- Clash detection (overlapping events)
+- Groceries list
+- Tasks/chores (assign to Lisa & Jabu)
+- “Ask Rosie” assistant (local mode + optional Gemini prototype mode)
 
-1) **GitHub Pages (recommended for your use-case)** — uses `index.html` + `main.js` (static ESM) so Pages never tries to load `src/main.tsx`.
-2) **Developer mode (Vite/React/TS)** — the original source remains in `src/` and can be built locally (optional).
+## Run locally
+Just open `index.html` in a browser, or use a tiny static server:
 
-## GitHub Pages (blank-page fix)
-In GitHub Settings → Pages set:
-- Source: **Deploy from a branch**
-- Branch: **main**
-- Folder: **/(root)**
-
-The site will load `./main.js` (no TSX, no JSX, no eval).
-
-
-# Rosie – Family Assistant (family-pa)
-
-A lightweight family assistant web app designed to run **entirely on GitHub Pages** (static hosting only).
-
-## What this is
-- A friendly, light-themed “family board” where each person can set a quick status
-- Admins (Nasima & Suhayl) can see Rosie’s summary
-- Family list is **data-driven** and members are **addable** (not hard-coded only)
-- Uses `localStorage` (per-browser) for now; future backend can be added later
-
-## Non-negotiables (GitHub Pages safe)
-- No server-side rendering
-- No inline scripts
-- No `eval()` / `new Function()`
-- Production bundle only
-
-## One-click local run
 ```bash
-npm install
-npm run dev
+python -m http.server 5173
+# then open http://localhost:5173
 ```
 
-## Build + preview
-```bash
-npm run build
-npm run preview
-```
+## Deploy to GitHub Pages
+1. Repo → Settings → Pages
+2. Source: **Deploy from a branch**
+3. Branch: **main** / folder **/(root)**
 
-## Deploy to GitHub Pages (recommended)
-1. Push to `main`
-2. GitHub → Settings → Pages → Source: **GitHub Actions**
-3. The workflow in `.github/workflows/deploy-pages.yml` builds and deploys.
+This repo is designed so Pages can serve it directly (no build needed).
 
-## Data model
-See `src/domain.ts`.
+## Calendar import
+- Go to **Calendar**
+- Upload a `.ics` file
+- Imported events appear immediately
+- Tap **Edit** to attach events to specific family members (helps clash detection)
 
-## License
-MIT (see `LICENSE`).
+## Reminders
+Rosie can show upcoming reminders and (optionally) use browser notifications.
+- Home → **Alerts** → allow notifications
+- Reminder lead times are configurable in **Settings**
 
-## Deploy (GitHub Pages)
-1. Push to `main`.
-2. GitHub → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Wait for the **Deploy to GitHub Pages** workflow to finish, then open the Pages URL.
+> Notifications only trigger while the app is open (browser limitation for many mobile browsers).
 
+## Gemini (prototype mode)
+You can enable Gemini in **Settings** and paste an API key.
+**Important security note:** Google recommends you **do not expose API keys client-side** for production. Prefer a secure backend (e.g., Firebase AI Logic) for real deployments.

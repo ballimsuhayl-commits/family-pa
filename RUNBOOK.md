@@ -1,27 +1,19 @@
 # RUNBOOK
 
-## Local dev
-```bash
-npm install
-npm run dev
-```
-Open the printed localhost URL.
+## Common fixes
 
-## CI deploy
-- Push to `main` triggers GitHub Actions.
-- Artifacts are built into `dist/` and deployed to GitHub Pages.
+### Blank page / 404 main.tsx
+This repo does not ship TSX to the browser. If you see `/src/main.tsx` errors, GitHub Pages is not serving this repo root.
+Fix: Settings → Pages → Source `main /(root)`.
 
-## Common issues
-### Blank page on Pages
-- In GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-  - If it’s set to “Deploy from a branch”, the root `index.html` will load `./src/main.tsx` (TypeScript) and won’t run in the browser.
-- Confirm the base path is correct (handled automatically in workflow with `VITE_BASE=/<repo>/`).
-- Check browser console for 404s on assets.
+### Notifications not firing
+Mobile browsers often require:
+- user gesture (tap Alerts)
+- app open in foreground
+- notifications enabled for the site
 
-### Cache
-Vite outputs hashed asset filenames. If you still see stale content:
-- Hard refresh (Ctrl/Cmd+Shift+R)
-- Re-open in an incognito window
+### Import shows no events
+Some calendar exports omit `SUMMARY` fields for certain event types. Try a different export option or another `.ics`.
 
-## Reset data
-Use the “Reset” button in the UI to clear `localStorage`.
+## Backup / restore
+Settings → Export JSON, or import the JSON file.
