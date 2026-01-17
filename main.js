@@ -8,6 +8,7 @@ import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/10.
 
 const LS_CFG="rosie.firebaseConfig";
 const STATUS=["Available","School","Working","Out","Busy","Sleeping"];
+const DEFAULT_FAMILY = [\"Nasima\",\"Suhayl\",\"Rayhaan\",\"Zaara\",\"Jabu\",\"Lisa\"]; // initial
 
 function loadCfg(){ try{ const r=localStorage.getItem(LS_CFG); return r?JSON.parse(r):null; }catch{ return null; } }
 function saveCfg(cfg){ localStorage.setItem(LS_CFG, JSON.stringify(cfg)); }
@@ -191,6 +192,8 @@ function App(){
   const [busy,setBusy]=useState(false);
 
   const [selectedMember,setSelectedMember]=useState("Me");
+const [newPerson,setNewPerson]=useState("");
+const [adding,setAdding]=useState(false);
   const [meDoc, meErr] = useDoc(fb?.db, "familyMembers", me?.uid || "_");
   const {admins, adminErr} = useAdmins(fb?.db);
   const isAdmin = me ? admins.includes(me.uid) : false;
@@ -288,7 +291,7 @@ function App(){
           React.createElement("div", {className:"small"}, "Reply"),
           React.createElement("div", {style:{whiteSpace:"pre-wrap", marginTop:6}}, answer)
         ) : null,
-        (adminErr || meErr) ? React.createElement("div", {className:"small", style:{marginTop:10}}, adminErr || meErr) : null
+        (adminErr || meErr || dirErr || dirErr) ? React.createElement("div", {className:"small", style:{marginTop:10}}, adminErr || meErr || dirErr) : null
       ),
 
       React.createElement("div", {className:"card"},
@@ -304,6 +307,17 @@ function App(){
             onClick:()=>setSelectedMember(t)
           }, t))
         ),
+        isAdmin ? React.createElement(\"div\", { className: \"row\", style: { marginTop: 10 } },
+          React.createElement(\"input\", {
+            className: \"input\",
+            value: newPerson,
+            onChange: e => setNewPerson(e.target.value),
+            placeholder: \"Add person (e.g., Grandma Aisha)…\"
+          }),
+          React.createElement(\"button\", { className: \"btn btnPrimary\", onClick: addPerson, disabled: adding || !newPerson.trim() },
+            adding ? \"Adding…\" : \"Add\"
+          )
+        ) : null,
         React.createElement("div", {className:"divider"}),
         React.createElement("div", {style:{display:"grid", gap:10}},
           React.createElement("div", {className:"small"}, "My Status"),
@@ -332,5 +346,28 @@ function App(){
     })
   );
 }
+
+
+  async function addPerson() {
+    if (!fb) return;
+    if (!me) return;
+    if (!isAdmin) { setAnswer("Master Admin only."); return; }
+    const name = newPerson.trim();
+    if (!name) return;
+    setAdding(true);
+    try {
+      const ref = doc(fb.db, "familyDirectory", "members");
+      const snap = await getDoc(ref);
+      const members = snap.exists() ? (snap.data().members || []) : [];
+      const list = Array.isArray(members) ? members.filter(x => typeof x === "string") : [];
+      if (!list.includes(name)) list.push(name);
+      await setDoc(ref, { members: list, updatedAt: serverTimestamp() }, { merge: true });
+      setNewPerson("");
+    } catch (e) {
+      setAnswer(e?.message || "Failed to add person.");
+    } finally {
+      setAdding(false);
+    }
+  }
 
 createRoot(document.getElementById("root")).render(React.createElement(App));

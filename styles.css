@@ -97,3 +97,26 @@ textarea{resize:vertical}
 .modal{width:min(820px,100%)}
 .divider{height:1px;background:var(--border);margin:14px 0}
 .toast{margin-top:10px;font-size:13px;color:var(--text)}
+
+
+/* --- Fun UX extras (no JS deps) --- */
+body::before{
+  content:"";
+  position:fixed; inset:-40px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(99,102,241,.22), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(139,92,246,.18), transparent 50%),
+    radial-gradient(circle at 55% 85%, rgba(16,185,129,.12), transparent 55%);
+  filter: blur(0px);
+  pointer-events:none;
+  z-index:-1;
+}
+.card{border-radius:28px}
+.logo{border-radius:18px}
+.mascot{animation: floaty 3.8s ease-in-out infinite}
+@keyframes floaty{
+  0%,100%{transform: translateY(0)}
+  50%{transform: translateY(-6px)}
+}
+.btnPrimary{box-shadow: 0 10px 20px rgba(99,102,241,.18)}
+.tabActive{transform: translateY(-1px)}

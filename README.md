@@ -26,3 +26,7 @@ firebase deploy --only functions,firestore:rules,firestore:indexes
 - Settings -> paste Firebase web config JSON
 - Create/sign in Nasima + Suhayl
 - Settings -> Admin -> Claim Admin Slot (2 total)
+
+## Icon 404 sanity check
+If you see `icons/icon.svg 404`, verify the repo contains `icons/icon.svg` and that this URL loads:
+`https://<user>.github.io/<repo>/icons/icon.svg`
