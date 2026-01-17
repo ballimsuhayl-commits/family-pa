@@ -18,3 +18,7 @@ If assignments are wrong, adjust rules in Settings (JSON).
 ## Backup / restore
 Settings → Export JSON
 Settings → Import JSON
+
+
+## GitHub Pages: blank page / 404 fixes
+If you ever see requests for `/src/app.js` or `/src/icons.js` returning 404, this repo ships `app.js` + `icons.js` at the site root and `main.js` imports those. The included workflow `sync-gh-pages.yml` also publishes the repo root to the `gh-pages` branch on every push to `main`.

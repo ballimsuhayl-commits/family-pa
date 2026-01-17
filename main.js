@@ -1,6 +1,6 @@
 
-import { store, nowIso, uid, fmtWhen, parseIcs, parseVoice, defaultData } from "./src/app.js";
-import { icons } from "./src/icons.js";
+import { store, nowIso, uid, fmtWhen, parseIcs, parseVoice, defaultData } from "./app.js";
+import { icons } from "./icons.js";
 
 const el = (tag, attrs={}, children=[]) => {
   const n = document.createElement(tag);
