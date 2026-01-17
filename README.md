@@ -1,4 +1,4 @@
-# Rosie – Family Assistant (Android-first, GitHub Pages safe)
+# Rosie – Family Assistant (Android-first, GitHub Pages safe (ITER11: role routing + WhatsApp reminders))
 
 Rosie reduces the noise of family life:
 - auto-files WhatsApp messages & voice notes into the right place

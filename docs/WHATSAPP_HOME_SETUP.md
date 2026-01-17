@@ -58,3 +58,9 @@ Expected:
 - Calendar gets Swimming @ 2pm for Zaara
 - Task created: Bring goggles (assigned to Nasima + Suhayl)
 - Rosie can WhatsApp notify both parents (if NOTIFY_PHONES configured)
+
+
+## Send roster + rules (recommended)
+After setting the Bridge URL and token in the Rosie app, open **Settings** and tap **Send roster + rules**.
+This lets Rosie Brain label senders (Zaara/Lisa/Jabu) and route reminders correctly.
+See `docs/WHATSAPP_ROUTING_REMINDERS.md`.

@@ -2,11 +2,23 @@ name = "rosie-brain-worker"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
-# Enable a cron to send reminders (optional)
+# Reminders + (optional) daily staff digest
 [triggers]
-crons = ["*/5 * * * *"]
+# Every 5 minutes: reminder safety tick
+# Daily digest at 06:00 UTC (adjust to your timezone by editing this line)
+crons = ["*/5 * * * *", "0 6 * * *"]
 
-# KV namespace for message storage (create in Cloudflare dashboard and paste id)
+# Durable Object for reminder scheduling
+[[durable_objects.bindings]]
+name = "SCHEDULER"
+class_name = "SchedulerDO"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SchedulerDO"]
+
+# KV namespace for message storage + config + snapshots (recommended)
+# Create a KV namespace in the Cloudflare dashboard and paste the id here.
 # [[kv_namespaces]]
 # binding = "ROSIE_KV"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

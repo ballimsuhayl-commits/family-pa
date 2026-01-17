@@ -63,6 +63,12 @@ export function createApp(root) {
     setInterval(async () => {
       await brain.syncIfConfigured(state, { onToast, quiet: true });
     }, 20_000);
+
+    // Periodically push a state snapshot so Rosie Brain can WhatsApp reminders/digests even when the app is closed.
+    setInterval(async () => {
+      await brain.pushSnapshotIfConfigured(state, { quiet: true });
+    }, 60_000);
+
   })();
 
   function onToast(msg) {
@@ -209,8 +215,33 @@ export function createApp(root) {
           state.integrations.whatsapp.bridgeUrl = url;
           state.integrations.whatsapp.bridgeToken = token;
           state.profile.currentUserId = me;
+
+          // Save family WhatsApp phone numbers (admin one-time setup)
+          el.main.querySelectorAll('[data-phone]').forEach(inp => {
+            const id = inp.getAttribute('data-phone');
+            const p = state.family.find(x => x.id === id);
+            if (p) p.phone = inp.value.trim();
+          });
+
           store.save(state);
           onToast('Saved ✨');
+        });
+      }
+
+      // Push roster + rules to Rosie Brain
+      const pushCfg = el.main.querySelector('[data-action="push-config"]');
+      if (pushCfg) {
+        pushCfg.addEventListener('click', async () => {
+          await brain.pushHouseConfig(state, { onToast });
+          rerender();
+        });
+      }
+
+      // Send staff digest now (optional)
+      const sendDigest = el.main.querySelector('[data-action="send-digest"]');
+      if (sendDigest) {
+        sendDigest.addEventListener('click', async () => {
+          await brain.sendStaffDigest(state, { onToast });
         });
       }
 
@@ -419,7 +450,7 @@ export function createApp(root) {
     openSheet(
       'Message',
       `
-      <p><strong>${escapeHtml(m.from)}</strong> • ${escapeHtml(formatDay(m.receivedAt))} ${escapeHtml(formatTime(m.receivedAt))}</p>
+      <p><strong>${escapeHtml(senderLabel(m, state))}</strong> • ${escapeHtml(formatDay(m.receivedAt))} ${escapeHtml(formatTime(m.receivedAt))}</p>
       <div class="card item">
         <div class="avatar">${icons.inbox}</div>
         <div class="meta">
@@ -688,7 +719,7 @@ function renderInbox(state) {
       </div>
 
       <div class="list" style="margin-top:10px">
-        ${items.length ? items.map(m => renderInboxRow(m)).join('') : emptyRow('No messages yet.')}
+        ${items.length ? items.map(m => renderInboxRow(m, state)).join('') : emptyRow('No messages yet.')}
       </div>
     </div>
   `;
@@ -802,8 +833,12 @@ function renderSettings(state) {
           <input class="input" name="bridgeToken" placeholder="Bridge Token" value="${escapeAttr(w.bridgeToken||'')}" />
           <div class="row-actions">
             <button class="btn primary" data-action="save-settings">Save</button>
+            <button class="btn" data-action="push-config">Send roster + rules</button>
+            <button class="btn" data-action="send-digest">Send staff digest</button>
           </div>
-          <div class="small">See docs/WHATSAPP_HOME_SETUP.md</div>
+          <div class="small">Reminders: ${escapeHtml((w.reminders?.leadTimes||[]).map(x=>x.label).join(' • ') || 'default')}</div>
+          <div class="small">Last roster push: ${escapeHtml(w.configPushedAt||'—')}</div>
+          <div class="small">See docs/WHATSAPP_HOME_SETUP.md and docs/WHATSAPP_ROUTING_REMINDERS.md</div>
         </div>
       </div>
 
@@ -818,7 +853,9 @@ function renderSettings(state) {
                 <span class="badge">${escapeHtml(m.role)}</span>
                 ${m.admin?`<span class="badge ok">Admin</span>`:''}
               </div>
-              <div class="sub">Phone: ${escapeHtml(m.phone||'—')} • Status: ${escapeHtml(m.status||'ok')}</div>
+              <div class="sub">WhatsApp phone</div>
+              <input class="input" data-phone="${escapeAttr(m.id)}" placeholder="+countrycode..." value="${escapeAttr(m.phone||'')}" />
+              <div class="small">Status: ${escapeHtml(m.status||'ok')}</div>
             </div>
           </div>
         `).join('')}
@@ -843,17 +880,39 @@ function renderSettings(state) {
 
 // Render helpers
 function emptyRow(text) {
-  return `<div class="card item"><div class="avatar">🌿</div><div class="meta"><div class="row"><div class="name">${escapeHtml(text)}</div></div><div class="sub">Rosie will keep watch in the background.</div></div></div>`;
+  return `<div class="card item"><div class="avatar">🌿</div><div class="meta"><div class="row"><div class="name">${escapeHtml(text)}</div></div><div class="sub">Rosie will keep watch in the background.</
+function senderLabel(m, state) {
+  if (m?.fromLabel) return m.fromLabel;
+  const phone = String(m?.from||'').replace(/[^0-9]/g,'');
+  if (phone && state?.family?.length) {
+    const p = state.family.find(x => String(x.phone||'').replace(/[^0-9]/g,'') === phone);
+    if (p) return p.name;
+  }
+  return m?.from || 'WhatsApp';
 }
 
-function renderInboxRow(m) {
+function senderRoleBadge(m, state) {
+  const phone = String(m?.from||'').replace(/[^0-9]/g,'');
+  const p = phone && state?.family?.length ? state.family.find(x => String(x.phone||'').replace(/[^0-9]/g,'') === phone) : null;
+  if (!p) return '';
+  if (p.admin) return '<span class="badge">Admin</span>';
+  const r = (p.role||'').toLowerCase();
+  if (r.includes('daughter') || r.includes('son')) return '<span class="badge kid">Kid</span>';
+  if (r.includes('helper') || r.includes('garden') || r.includes('maintenance')) return '<span class="badge staff">Staff</span>';
+  return '';
+}
+
+div></div></div>`;
+}
+
+function renderInboxRow(m, state) {
   const badge = m.status === 'filed' ? '<span class="badge ok">Filed</span>' : '<span class="badge">New</span>';
   const preview = m.parsed ? renderParsedSummary(m.parsed) : '<span class="small">Tap to file</span>';
   return `
     <button class="card item" data-open-msg="${escapeAttr(m.id)}" style="text-align:left;width:100%;background:var(--card)">
       <div class="avatar">${icons.inbox}</div>
       <div class="meta">
-        <div class="row"><div class="name">${escapeHtml(m.from)}</div>${badge}</div>
+        <div class="row"><div class="name">${escapeHtml(senderLabel(m, state))}</div>${senderRoleBadge(m, state)}${badge}</div>
         <div class="sub">${escapeHtml(m.text)}</div>
         <div class="sub">${preview}</div>
       </div>

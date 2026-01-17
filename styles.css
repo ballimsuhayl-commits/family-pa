@@ -266,3 +266,7 @@ button,input,select,textarea{font:inherit}
 }
 .install strong{display:block;font-size:13px}
 .install .row-actions{margin-top:10px}
+
+
+.badge.kid { background: rgba(99,102,241,.12); color: #3730a3; border-color: rgba(99,102,241,.25); }
+.badge.staff { background: rgba(16,185,129,.12); color: #065f46; border-color: rgba(16,185,129,.25); }
