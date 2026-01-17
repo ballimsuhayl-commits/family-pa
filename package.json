@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview",
+    "emulators": "firebase emulators:start --only auth,firestore,functions",
+    "deploy:firebase": "firebase deploy --only functions,firestore:rules,firestore:indexes"
   },
   "dependencies": {
     "firebase": "^10.12.4",
