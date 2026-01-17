@@ -2,21 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <meta name="theme-color" content="#f7e8ff" />
-    <title>Rosie – Family Assistant</title>
-
-    <!-- Favicon (no /favicon.ico request) -->
-    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="%23ffd6f5"/><circle cx="32" cy="34" r="18" fill="%23111827"/><circle cx="25" cy="32" r="5" fill="white"/><circle cx="39" cy="32" r="5" fill="white"/><path d="M24 42c4 5 12 5 16 0" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/></svg>'>
-
-    <link rel="manifest" href="./manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7fbff" />
+    <meta name="description" content="Rosie – Family Assistant (GitHub Pages, CSP-safe)" />
+    <!-- Avoid favicon.ico 404 on GitHub Pages -->
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles.css" />
+    <title>Rosie – Family Assistant</title>
   </head>
   <body>
-    <noscript>This app needs JavaScript enabled.</noscript>
-    <div id="app" class="app-shell" role="application" aria-label="Rosie Family Assistant"></div>
-
-    <!-- CSP-safe: module script only -->
+    <div id="root"></div>
+    <!-- Static ESM entry (no TSX/JSX at runtime, no eval, no inline scripts) -->
     <script type="module" src="./main.js"></script>
   </body>
 </html>

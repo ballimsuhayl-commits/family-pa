@@ -1,0 +1,217 @@
+:root{
+  --bg1:#f7fbff;
+  --bg2:#f6f1ff;
+  --card:#ffffffcc;
+  --text:#12212f;
+  --muted:#516273;
+  --accent:#6b5cff;
+  --ok:#1a8754;
+  --warn:#b65d00;
+  --shadow: 0 10px 30px rgba(16, 24, 40, 0.12);
+  --radius: 18px;
+  --ring: 0 0 0 3px rgba(107,92,255,0.18);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(107,92,255,0.14), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(255,168,214,0.20), transparent 55%),
+    linear-gradient(135deg, var(--bg1), var(--bg2));
+}
+a{color:inherit}
+button, input{
+  font: inherit;
+}
+.container{
+  max-width: 980px;
+  padding: 22px;
+  margin: 0 auto;
+}
+.header{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  margin-bottom: 18px;
+}
+.brand{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.mascot{
+  width:54px;
+  height:54px;
+  border-radius: 16px;
+  display:grid;
+  place-items:center;
+  background: #ffffffb5;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(18,33,47,0.07);
+}
+.title h1{
+  margin:0;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+}
+.title p{
+  margin:2px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.pill{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ffffffb5;
+  border: 1px solid rgba(18,33,47,0.07);
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+}
+.grid{
+  display:grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
+}
+@media (max-width: 900px){
+  .grid{grid-template-columns: 1fr}
+}
+.card{
+  background: var(--card);
+  border: 1px solid rgba(18,33,47,0.07);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  backdrop-filter: blur(10px);
+}
+.card h2{
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+.card p{
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.row{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  justify-content:space-between;
+}
+.small{
+  font-size: 12px;
+  color: var(--muted);
+}
+.familyList{
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  margin-top: 10px;
+}
+.member{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(18,33,47,0.08);
+  background: rgba(255,255,255,0.65);
+}
+.member .left{
+  min-width: 0;
+}
+.member .name{
+  font-weight: 650;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.badge{
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(18,33,47,0.10);
+  background: rgba(255,255,255,0.8);
+}
+.status{
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.actions{
+  display:flex;
+  gap: 8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.btn{
+  border: 1px solid rgba(18,33,47,0.12);
+  background: rgba(255,255,255,0.8);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor:pointer;
+  transition: transform .05s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.btn:focus-visible{outline:none; box-shadow: var(--ring)}
+.btn:hover{border-color: rgba(107,92,255,0.35)}
+.btn:active{transform: translateY(1px)}
+.btn.primary{
+  background: rgba(107,92,255,0.12);
+  border-color: rgba(107,92,255,0.35);
+}
+.btn.danger{
+  background: rgba(255,80,80,0.10);
+  border-color: rgba(255,80,80,0.30);
+}
+.inputRow{
+  display:flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap:wrap;
+}
+.input{
+  flex:1;
+  min-width: 240px;
+  border-radius: 12px;
+  border: 1px solid rgba(18,33,47,0.12);
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.85);
+}
+hr.sep{
+  border: none;
+  border-top: 1px solid rgba(18,33,47,0.10);
+  margin: 14px 0;
+}
+.kpi{
+  display:flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap:wrap;
+}
+.kpi .box{
+  flex: 1;
+  min-width: 160px;
+  border-radius: 14px;
+  border: 1px solid rgba(18,33,47,0.08);
+  background: rgba(255,255,255,0.7);
+  padding: 10px 12px;
+}
+.kpi .box .label{font-size: 11px; color: var(--muted)}
+.kpi .box .value{font-weight: 700; margin-top: 2px}
+.footer{
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}

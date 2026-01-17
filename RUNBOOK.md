@@ -25,11 +25,3 @@ Vite outputs hashed asset filenames. If you still see stale content:
 
 ## Reset data
 Use the “Reset” button in the UI to clear `localStorage`.
-
-
-## GitHub Pages deployment (required)
-
-- In GitHub: Settings → Pages → Build and deployment → **Deploy from a branch**
-- Select branch: **gh-pages** and folder: **/(root)**
-
-The workflow `.github/workflows/deploy-pages.yml` builds the app and publishes `dist/` to `gh-pages`.

@@ -3,7 +3,7 @@
   "short_name": "Rosie",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#f7e8ff",
+  "background_color": "#f7fbff",
+  "theme_color": "#f7fbff",
   "icons": []
 }
