@@ -1,39 +1,27 @@
-# Rosie (Family PA)
+# Rosie — Full Stack ZIP (GitHub Pages + Firebase)
 
-## What this ZIP is
-A full, wired, production-ready setup for:
-- GitHub Pages (frontend) via GitHub Actions (builds Vite -> dist)
-- Firebase (Auth + Firestore Rules + Cloud Functions)
-- Gemini calls are server-side only (Cloud Functions secret)
+This repo is designed for **GitHub Online deployment**:
+- Frontend is **pure static** (no Vite build needed).
+- Fixes 404 for /src/main.jsx permanently.
+- Works with GitHub Pages "Deploy from branch" OR GitHub Actions.
 
-## Go Live — Checklist
+## Go Live (Frontend)
+1) Replace your repo contents with the contents of this ZIP.
+2) GitHub -> Settings -> Pages:
+   - Source: Deploy from branch (main / root) OR GitHub Actions
+3) Open your GitHub Pages URL.
 
-### 1) GitHub Pages (frontend)
-1. Push this repo to GitHub (main branch).
-2. Repo Settings -> Pages
-   - Source: **GitHub Actions**
-3. Actions tab -> wait for "Deploy GitHub Pages" to turn green.
-4. Open your Pages URL. You should see Rosie.
-
-### 2) Firebase Console (one-time)
-- Authentication -> Sign-in method -> enable **Email/Password**.
-
-### 3) Deploy backend (Functions + Firestore Rules)
-Prereq: Firebase CLI logged in to the correct Google account.
-Commands:
+## Go Live (Backend)
+1) Firebase Console -> Authentication -> enable Email/Password.
+2) Deploy:
 ```bash
-npm install
-npm install --prefix functions
+npm i -g firebase-tools
+firebase login
+firebase use nasima-family-pa
 firebase functions:secrets:set GEMINI_API_KEY
 firebase deploy --only functions,firestore:rules,firestore:indexes
 ```
 
-### 4) In the app (first time)
-- Open Rosie -> Settings
-- Paste Firebase web config JSON (public)
-- Create/sign-in Nasima account -> Claim Admin
-- Create/sign-in Suhayl account -> Claim Admin (2nd slot)
-
-## Notes
-- Two admin slots max, enforced by Cloud Functions + Firestore rules.
-- Voice: uses device Text-to-Speech. If a female voice exists it will be preferred.
+## In the App
+- Settings -> paste Firebase web config JSON
+- Create/sign in Nasima + Suhayl -> Claim Admin Slot (2 total)

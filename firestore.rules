@@ -1,10 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
     function signedIn() { return request.auth != null; }
 
-    // Admin control doc: server-only writes (Cloud Functions).
     match /control/admin {
       allow read: if signedIn();
       allow write: if false;
@@ -16,14 +14,12 @@ service cloud.firestore {
         request.auth.uid in get(/databases/$(database)/documents/control/admin).data.admins;
     }
 
-    // Each user: doc id is the user's UID
     match /familyMembers/{uid} {
       allow read: if signedIn();
       allow create, update: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow delete: if isAdmin();
     }
 
-    // Default deny everything else
     match /{document=**} {
       allow read, write: if false;
     }
