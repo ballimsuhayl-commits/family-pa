@@ -1,26 +1,37 @@
-# ARCHITECTURE
+# Architecture
 
-## Goals
-- Mobile-first, calm UI to reduce overwhelm
-- Works on GitHub Pages as a static site (no server-rendering, no runtime TSX)
-- Data-driven family model (members are editable)
-- Privacy-first: data stored locally on the device by default
+## Constraints
+- Frontend must run on GitHub Pages (static hosting).
+- No inline scripts, no eval/new Function.
 
-## Components
-- `index.html` + `styles.css` + `main.js` (ES module)
-- `sw.js` provides offline cache for core assets
-- Storage: `localStorage` (`rosie.familyPa.v1`)
+## High-level
+- React + Vite SPA (`apps/web`)
+- Storage abstraction:
+  - Local (IndexedDB via idb-keyval)
+  - Optional Firestore sync (Firebase Web SDK)
 
-## Data model (high level)
-- `family[]` members (admins are a flag, not hard-coded)
-- `events[]` calendar items (imported or manual)
-- `tasks[]` chores/to-dos with optional assignment + due date
-- `groceries[]` shopping list
-- `chat[]` recent Rosie chat messages
+## Data model
+- `members`: family members
+- `events`: calendar events (imported .ics or manual)
+- `tasks`: chores / household tasks
+- `groceries`: shopping list
+- `settings`: reminder lead times, admin emails, auto-assign rules
 
-## AI Integration
-Two modes:
-1) Local Rosie (default): rule-based summaries & guidance.
-2) Gemini prototype mode: direct client-side API call (NOT recommended for production).
+## Sync
+When Firebase config exists:
+- App signs in (optional)
+- Subscribes to Firestore collections for the selected familyId
+- Writes are mirrored to local cache
 
-Production-grade AI integration should use a backend proxy (e.g., Firebase AI Logic) to keep credentials confidential.
+Without Firebase:
+- Reads/writes go to local storage only
+
+## Admin controls
+- Uses Firebase Auth Google sign-in
+- Admin allowlist stored in `settings.adminEmails`
+- If allowlist empty → first signed-in user can claim admin
+
+## Proactive suggestions
+- Detect overlapping events per member
+- Flag overbooked days
+- Suggest moving flexible tasks earlier/later or delegating

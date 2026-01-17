@@ -1,20 +1,19 @@
-# SECURITY
+# Security
 
-## CSP / GitHub Pages safety
-This app:
-- Uses **no** `eval()` / `new Function()`
-- Uses **no** inline `<script>` blocks
-- Uses only static assets
+## No secrets in client
+Rosie can run without any secrets. If you enable Firebase, you still should treat the Firebase web config as public.
 
-## Data
-Default: stored locally in `localStorage`.
-- Anyone with access to the device/browser profile can read it.
-- Use **Export JSON** for backups.
+## Admin controls
+- Admin access is controlled by a Firestore allowlist of email addresses.
+- If allowlist is empty, the first signed-in user can claim admin.
 
-## Gemini API keys
-If you enable Gemini prototype mode, the key is stored in `localStorage` and can be extracted from the browser.
-This is **not secure** for production.
-Use a server-side proxy / Firebase AI Logic for production.
+## Firestore rules
+Use the provided example rules in `firebase/firestore.rules` and tighten them for your family.
 
-## Dependencies
-No external JS libraries are loaded from CDNs.
+## CSP
+- No inline script tags.
+- No eval/new Function.
+
+## Data safety
+- Local data is stored in IndexedDB.
+- Export/import supported (JSON) in Settings.

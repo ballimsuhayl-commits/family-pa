@@ -1,19 +1,26 @@
-# RUNBOOK
+# Runbook
 
-## Common fixes
+## Common issues
+### Blank page on GitHub Pages
+Cause: wrong Pages source or wrong base path.
+Fix:
+- Pages must serve `gh-pages` branch (root).
+- Ensure Actions workflow completes successfully.
 
-### Blank page / 404 main.tsx
-This repo does not ship TSX to the browser. If you see `/src/main.tsx` errors, GitHub Pages is not serving this repo root.
-Fix: Settings → Pages → Source `main /(root)`.
+### Still seeing requests like `/src/main.tsx`
+That means Pages is serving source, not build output.
+Fix: Settings → Pages → Source `Deploy from a branch` → `gh-pages` / root.
 
-### Notifications not firing
-Mobile browsers often require:
-- user gesture (tap Alerts)
-- app open in foreground
-- notifications enabled for the site
+## Commands
+- Dev: `npm run dev`
+- Lint: `npm run lint`
+- Tests: `npm run test`
+- Build: `npm run build`
+- Preview: `npm run preview`
 
-### Import shows no events
-Some calendar exports omit `SUMMARY` fields for certain event types. Try a different export option or another `.ics`.
+## Firebase (optional)
+- Enable Firestore + Auth Google
+- Add env vars in GitHub Secrets (recommended) or `.env.local`
 
-## Backup / restore
-Settings → Export JSON, or import the JSON file.
+## Rollback
+- Revert to previous successful commit; `gh-pages` will redeploy automatically.

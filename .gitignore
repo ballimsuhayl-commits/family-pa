@@ -1,5 +1,9 @@
 node_modules
+.dist
+.dist-*
 dist
-.DS_Store
-.env
 .env.local
+.env.*.local
+.DS_Store
+coverage
+playwright-report
