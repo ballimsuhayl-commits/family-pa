@@ -20,3 +20,7 @@ Minimize user effort: Nasima speaks, Rosie files.
 
 ## Why no React/Vite here
 GitHub Pages errors occurred because it served `index.html` that referenced `/src/main.tsx`. This stack avoids that entire class of deployment failures.
+
+
+## Optional WhatsApp bridge
+The static UI can poll a private "Rosie Brain" webhook service (e.g., Cloudflare Worker) to ingest WhatsApp messages and auto-file them.

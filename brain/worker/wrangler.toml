@@ -1,0 +1,13 @@
+name = "rosie-brain"
+main = "src/index.js"
+compatibility_date = "2025-12-01"
+
+# Bindings
+kv_namespaces = [
+  { binding = "ROSIE_KV", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+]
+
+[vars]
+# Comma-separated list of allowed origins for CORS, e.g.
+# ALLOWED_ORIGINS = "https://ballimsuhayl-commits.github.io"
+ALLOWED_ORIGINS = ""

@@ -25,3 +25,7 @@ Stored locally in `localStorage` (export/import in Settings). This can be upgrad
 
 ## Security
 No inline scripts. No eval(). No new Function(). No external CDNs.
+
+
+## WhatsApp (optional)
+See `docs/WHATSAPP_HOME_SETUP.md`.

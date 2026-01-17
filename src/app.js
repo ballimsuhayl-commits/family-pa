@@ -35,8 +35,7 @@ export const defaultData = () => {
         { memberName:"Zaara", keywords:["zaara","year 11","gcse","netball","school"] }
       ],
       dealHunt: { enabled:false },
-      ai: { enabled:false, provider:"firebase", endpoint:"" },
-      whatsapp: { enabled:false, endpoint:"", readToken:"", lastSync:0 }
+      ai: { enabled:false, provider:"firebase", endpoint:"" }
     },
     session: { memberId: byName["nasima"] || "" }
   };

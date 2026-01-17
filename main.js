@@ -646,7 +646,39 @@ const pageSettings = () => {
         ])
       ])))
     ]),
+    
     el("div",{class:"card"},[
+      el("div",{class:"h2"},["WhatsApp Inbox Bridge (optional)"]),
+      el("p",{class:"p muted"},["Admin setup once. Rosie will pull messages from your private Rosie Brain and auto-file them. Nasima never needs extra steps."]),
+      el("label",{class:"p"},["Endpoint URL"]),
+      el("input",{class:"input", id:"waEndpoint", placeholder:"https://rosie-brain.<you>.workers.dev", value:(s.settings.whatsapp?.endpoint||"")}),
+      el("label",{class:"p", style:"margin-top:10px"},["Read token (Bearer)"]),
+      el("input",{class:"input", id:"waToken", placeholder:"(set READ_TOKEN in Worker)", value:(s.settings.whatsapp?.readToken||"")}),
+      el("div",{class:"row", style:"margin-top:10px; gap:10px; flex-wrap:wrap"},[
+        el("button",{class:"btn", onClick:()=>{
+          s.settings.whatsapp = s.settings.whatsapp || { enabled:false, endpoint:"", readToken:"", lastSync:0 };
+          s.settings.whatsapp.endpoint = (document.getElementById("waEndpoint").value||"").trim();
+          s.settings.whatsapp.readToken = (document.getElementById("waToken").value||"").trim();
+          s.settings.whatsapp.enabled = true;
+          store.set(s);
+          showToast("WhatsApp bridge enabled.");
+        }},["Enable"]),
+        el("button",{class:"btn", onClick:()=>{
+          s.settings.whatsapp = s.settings.whatsapp || { enabled:false, endpoint:"", readToken:"", lastSync:0 };
+          s.settings.whatsapp.enabled = false;
+          store.set(s);
+          showToast("WhatsApp bridge disabled.");
+        }},["Disable"]),
+        el("button",{class:"btn primary", onClick:async()=>{
+          s.settings.whatsapp = s.settings.whatsapp || { enabled:false, endpoint:"", readToken:"", lastSync:0 };
+          s.settings.whatsapp.endpoint = (document.getElementById("waEndpoint").value||"").trim();
+          s.settings.whatsapp.readToken = (document.getElementById("waToken").value||"").trim();
+          store.set(s);
+          await syncWhatsAppInbox({silent:false});
+        }},["Sync now"])
+      ])
+    ]),
+el("div",{class:"card"},[
       el("div",{class:"h2"},["Backup"]),
       el("div",{class:"row", style:"margin-top:10px; gap:10px; flex-wrap:wrap"},[
         el("button",{class:"btn", onClick:exportData},["Export JSON"]),
@@ -672,6 +704,67 @@ const fab = () => el("button",{class:"fab", title:"Tell Rosie", onClick:()=>{
   // scroll to voice card
   window.scrollTo({top:0, behavior:"smooth"});
 }},[el("span",{html:icons.mic})]);
+
+
+// WhatsApp inbox sync (optional)
+const syncWhatsAppInbox = async (opts={}) => {
+  const s = store.get();
+  const wa = s.settings?.whatsapp || {};
+  if (!wa.enabled || !wa.endpoint) return;
+  const endpoint = wa.endpoint.replace(/\/+$/,"");
+  const since = wa.lastSync || 0;
+  try{
+    const res = await fetch(`${endpoint}/api/inbox?since=${encodeURIComponent(String(since))}`, {
+      headers: wa.readToken ? { "Authorization": `Bearer ${wa.readToken}` } : {}
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const items = (data && data.items) ? data.items : [];
+    if (!Array.isArray(items) || !items.length) return;
+    // dedupe by id
+    const have = new Set((s.inbox||[]).map(x=>x.id));
+    for (const it of items){
+      if (!it || !it.id || have.has(it.id)) continue;
+      const atISO = new Date(it.ts || Date.now()).toISOString();
+      const entry = { id: it.id, atISO, from: it.from || "", text: it.text || "", source: "whatsapp", filed: false };
+      s.inbox = s.inbox || [];
+      s.inbox.unshift(entry);
+
+      // Auto-file into system using existing parser
+      const parsed = parseVoice(entry.text, s);
+      if (parsed.groceries?.length){
+        s.groceries = s.groceries || [];
+        for (const g of parsed.groceries){
+          s.groceries.unshift({ id: uid(), item: g, addedISO: atISO, by: entry.from || "WhatsApp", done: false });
+        }
+      }
+      if (parsed.tasks?.length){
+        s.tasks = s.tasks || [];
+        for (const t of parsed.tasks){
+          s.tasks.unshift({ id: uid(), title: t.title, assigneeId: t.assigneeId || "", dueISO: t.dueISO || "", priority: t.priority || "normal", createdISO: atISO, done: false, source:"whatsapp" });
+        }
+      }
+      if (parsed.events?.length){
+        s.events = s.events || [];
+        for (const e of parsed.events){
+          s.events.unshift({ id: uid(), title: e.title, startISO: e.startISO, endISO: e.endISO, memberId: e.memberId || "", source:"whatsapp" });
+        }
+      }
+      if (parsed.statuses?.length){
+        s.status = s.status || {};
+        for (const st of parsed.statuses){
+          if (st.memberId) s.status[st.memberId] = { status: st.status, note: st.note||"", atISO };
+        }
+      }
+      entry.filed = true;
+      wa.lastSync = Math.max(wa.lastSync||0, Number(it.ts||0));
+      s.settings.whatsapp = wa;
+    }
+    store.set(s);
+    if (!opts.silent) showToast(`Rosie filed ${items.length} WhatsApp msg${items.length===1?"":"s"}.`);
+    render();
+  }catch{}
+};
 
 // reminders tick
 const tickReminders = () => {
@@ -706,4 +799,5 @@ window.addEventListener("storage", render);
 store.init();
 render();
 setInterval(tickReminders, 60*1000);
+setInterval(()=>syncWhatsAppInbox({silent:true}), 15000);
 tickReminders();
