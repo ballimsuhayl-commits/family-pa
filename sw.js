@@ -1,5 +1,6 @@
-const CACHE='rosie-cache-v13';
-const ASSETS=['./','./index.html','./styles.css','./main.js','./app.js','./icons.js','./store.js','./calendar.js','./parser.js','./manifest.webmanifest'];
+const CACHE='rosie-cache-v14';
+const ASSETS=['./','./index.html','./styles.css','./main.js','./app.js','./icons.js','./store.js','./calendar.js','./parser.js',
+  './ics.js','./manifest.webmanifest'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k===CACHE?null:caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{

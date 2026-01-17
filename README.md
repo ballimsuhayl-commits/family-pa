@@ -1,14 +1,25 @@
-# Rosie – Family Assistant (ITER13)
+# Rosie – Family Assistant (ITER14)
 
-This iteration adds a **Calendar overview** with **2-week** and **Month** views.
-Tap any day to see all activities with **who / what / where**.
+Mobile-first, GitHub Pages safe family assistant.
 
-## Deploy (GitHub Pages)
+## What’s new in ITER14
+- **Command Center Home:** Next 14 days in one scroll (Today/Tomorrow included)
+- **Lists:** Tasks + Groceries (quick add, one-tap done)
+- **Urgent view:** clashes, urgent tasks, and “bring this” prep reminders (next 72h)
+- **Calendar overview:** 2-week + Month views
+- **Filters:** person / type (School/Home/Staff/Other) / location
+- **School calendar import:** upload `.ics` and Rosie auto-fills the calendar
+
+## Hosting (GitHub Pages)
 Settings → Pages → Deploy from branch → `main` → `/(root)`
 
-## Baseline invariants (do not break)
-- `index.html` loads `./main.js`
-- runtime imports are `./app.js`, `./icons.js`, etc (no `/src/*`)
+## Non-breakable invariants
+- `index.html` loads `./main.js` (never `/src/main.tsx`)
+- runtime modules are in repo root (`./app.js`, `./store.js`, etc.)
+- no inline scripts, no eval
 
-## Run locally
-`python -m http.server 8080` then open http://localhost:8080
+## Local run
+- `python -m http.server 8080` then open `http://localhost:8080`
+
+## Data
+Stored in `localStorage` under `rosie.v14.state`. On first run it migrates from older keys automatically.
