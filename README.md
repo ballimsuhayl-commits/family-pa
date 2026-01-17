@@ -1,27 +1,36 @@
-# Rosie – Family Assistant (ITER6 Voice-First)
+# Rosie – Family Assistant (GitHub Pages)
 
-Rosie reduces mental load: **speak once**, Rosie sorts it into calendar, tasks, groceries, and reminders.
+Rosie is a mobile-first family assistant designed to reduce admin “mental load”:
+- voice-first capture (“Tell Rosie”)
+- auto-sorts into Calendar / Tasks (Lisa/Jabu) / Groceries / Status
+- clash detection + early reminders
+- static hosting compatible (GitHub Pages)
 
-## Key UX rule
-Nasima should do as little as possible. **Voice-first** capture does the filing.
+## Quick start (local)
+Requirements: Node 20+
 
-## Features
-- Mobile-first UI (bottom nav + big tap targets)
-- Voice capture via Web Speech API (Chrome mobile best)
-- Auto-filing: groceries / tasks / events / status
-- Clash detection
-- Offline-first (localStorage)
-
-## Run locally
 ```bash
 npm ci
 npm run dev
 ```
 
-## Deploy to GitHub Pages (project site: /family-pa/)
+## Deploy to GitHub Pages
 1. Push to `main`
-2. GitHub Actions deploys build output to `gh-pages`
-3. Repo Settings → Pages: source `gh-pages` /(root)
+2. Repo → Settings → Pages → **Source: GitHub Actions**
+3. The workflow builds and deploys automatically.
 
-## Notes on voice
-Web Speech API availability varies by browser. If voice isn't supported, Rosie falls back to text input.
+## Voice features
+- **Live speech-to-text** uses the browser Web Speech API (best on Chrome/Android).
+- **Voice notes** are recorded with `MediaRecorder` and stored locally (IndexedDB).
+- Optional: hook up a secure transcription gateway (see `docs/RUNBOOK.md`).
+
+## Data storage
+Default: local-first (LocalStorage + IndexedDB). Optional shared sync can be added later (e.g., Firestore).
+
+## Scripts
+- `npm run dev` – dev server
+- `npm run build` – production build
+- `npm run preview` – preview build
+- `npm run lint` – lint
+- `npm run test` – unit tests
+

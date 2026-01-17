@@ -1,9 +1,7 @@
 node_modules
-.dist
-.dist-*
 dist
-.env.local
-.env.*.local
-.DS_Store
+.vite
 coverage
-playwright-report
+.env
+.env.*
+.DS_Store
