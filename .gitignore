@@ -1,55 +1,9 @@
-```
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-build/
-coverage/
-htmlcov/
-
-# Environment variables
+node_modules
+dist
 .env
-.env.local
-.env.*
-
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.swp
-*~
-
-# IDE specific
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS generated files
+.firebase
 .DS_Store
-Thumbs.db
-
-# Testing
-.mypy_cache/
-.pytest_cache/
-coverage.xml
-*.coverage
-
-# Distribution / packaging
-*.tar.gz
-*.whl
-*.egg
-*.egg-info/
-
-# VCS ignored files
-.git/
-!.gitignore
-```
+coverage
+functions/node_modules
+functions/lib
+functions/.env

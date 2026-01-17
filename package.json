@@ -1,24 +1,19 @@
 {
-  "name": "workspace",
+  "name": "rosie-family-pa",
+  "private": true,
   "version": "1.0.0",
-  "description": "app for personal use",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.2",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "vite": "^7.3.1"
+    "build": "vite build"
   },
   "dependencies": {
-    "marked": "^17.0.1"
+    "firebase": "^10.12.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
   }
 }
