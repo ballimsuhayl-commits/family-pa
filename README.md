@@ -36,3 +36,9 @@ See `src/domain.ts`.
 
 ## License
 MIT (see `LICENSE`).
+
+## Deploy (GitHub Pages)
+1. Push to `main`.
+2. GitHub → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Wait for the **Deploy to GitHub Pages** workflow to finish, then open the Pages URL.
+

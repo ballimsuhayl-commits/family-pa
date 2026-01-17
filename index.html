@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f7fbff" />
     <meta name="description" content="Rosie – Family Assistant (GitHub Pages)" />
+    <link rel="icon" href="./favicon.ico" />
     <title>Rosie – Family Assistant</title>
   </head>
   <body>
     <div id="root"></div>
-    <!-- No inline scripts. Vite injects a module entry for dev; build outputs hashed assets. -->
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- No inline scripts. Vite serves this in dev and rewrites to hashed assets in prod build. -->
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

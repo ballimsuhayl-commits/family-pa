@@ -13,7 +13,8 @@ Open the printed localhost URL.
 
 ## Common issues
 ### Blank page on Pages
-- Confirm Pages is set to GitHub Actions.
+- In GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+  - If it’s set to “Deploy from a branch”, the root `index.html` will load `./src/main.tsx` (TypeScript) and won’t run in the browser.
 - Confirm the base path is correct (handled automatically in workflow with `VITE_BASE=/<repo>/`).
 - Check browser console for 404s on assets.
 
