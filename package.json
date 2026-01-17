@@ -1,17 +1,33 @@
 {
   "name": "family-pa",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
-  "workspaces": [
-    "apps/web"
-  ],
   "scripts": {
-    "dev": "npm -w apps/web run dev",
-    "build": "npm -w apps/web run build",
-    "preview": "npm -w apps/web run preview",
-    "lint": "npm -w apps/web run lint",
-    "test": "npm -w apps/web run test",
-    "e2e": "npm -w apps/web run e2e"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "format": "prettier -w ."
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "@eslint/js": "^9.9.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2",
+    "vitest": "^2.0.5",
+    "@vitest/coverage-v8": "^2.0.5",
+    "playwright": "^1.46.1",
+    "prettier": "^3.3.3"
   }
 }

@@ -1,26 +1,20 @@
 # Runbook
 
-## Common issues
-### Blank page on GitHub Pages
-Cause: wrong Pages source or wrong base path.
-Fix:
-- Pages must serve `gh-pages` branch (root).
-- Ensure Actions workflow completes successfully.
+## Smoke test
+```bash
+npm ci
+npm run lint
+npm run test
+npm run build
+npm run preview
+```
 
-### Still seeing requests like `/src/main.tsx`
-That means Pages is serving source, not build output.
-Fix: Settings → Pages → Source `Deploy from a branch` → `gh-pages` / root.
+## GitHub Pages blank page troubleshooting
+If you see 404 for `src/main.tsx` on the live site:
+- You are serving source instead of built `dist`.
+- Ensure Pages source is **gh-pages** branch.
+- Ensure the GitHub Action ran successfully.
 
-## Commands
-- Dev: `npm run dev`
-- Lint: `npm run lint`
-- Tests: `npm run test`
-- Build: `npm run build`
-- Preview: `npm run preview`
-
-## Firebase (optional)
-- Enable Firestore + Auth Google
-- Add env vars in GitHub Secrets (recommended) or `.env.local`
-
-## Rollback
-- Revert to previous successful commit; `gh-pages` will redeploy automatically.
+## Voice troubleshooting
+- Use Chrome on Android for best SpeechRecognition support.
+- If you get microphone permission errors, check site permissions.

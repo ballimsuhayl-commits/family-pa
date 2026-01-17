@@ -1,11 +1,8 @@
-# Third-party notices
+# Third Party Notices
 
-This project uses OSS dependencies under their respective licenses.
-
-Key packages:
 - React (MIT)
 - Vite (MIT)
-- Firebase JS SDK (Apache-2.0)
-- idb-keyval (MIT)
+- Zod (MIT)
 - Vitest (MIT)
 - Playwright (Apache-2.0)
+- GitHub Pages Deploy Action (MIT)
