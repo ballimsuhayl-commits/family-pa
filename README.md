@@ -27,3 +27,7 @@ Settings → Pages → Deploy from branch → `main` → `/(root)`
 
 ## Data
 Stored in `localStorage` under `rosie.v14.state`. On first run it migrates from older keys automatically.
+
+
+## Service Worker cache
+If you ever see a blank screen after an update, it is usually a cached Service Worker. This build uses `rosie-cache-v22` and auto-refreshes when updated.

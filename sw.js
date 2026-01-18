@@ -1,9 +1,52 @@
-const CACHE='rosie-cache-v14';
-const ASSETS=['./','./index.html','./styles.css','./main.js','./app.js','./icons.js','./store.js','./calendar.js','./parser.js',
-  './ics.js','./manifest.webmanifest'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k===CACHE?null:caches.delete(k)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy)).catch(()=>{});return res;}).catch(()=>cached||caches.match('./index.html'))));
+const CACHE = 'rosie-cache-v22';
+const ASSETS = [
+  './',
+  './index.html',
+  './styles.css',
+  './main.js',
+  './app.js',
+  './icons.js',
+  './store.js',
+  './calendar.js',
+  './parser.js',
+  './ics.js',
+  './manifest.webmanifest'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((k) => (k === CACHE ? null : caches.delete(k)))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      const fetchAndCache = fetch(event.request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((cache) => cache.put(event.request, copy)).catch(() => {});
+        return res;
+      });
+      // Cache-first for same-origin navigations/assets; fallback to network; finally to index.html.
+      return cached || fetchAndCache.catch(() => caches.match('./index.html'));
+    })
+  );
 });
