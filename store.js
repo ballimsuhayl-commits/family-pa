@@ -1,5 +1,5 @@
-const KEY = 'rosie.v14.state';
-const OLD_KEYS = ['rosie.v13.state','rosie.v12.state','rosie.v11.state'];
+const KEY = 'rosie.v15.state';
+const OLD_KEYS = ['rosie.v14.state','rosie.v13.state','rosie.v12.state','rosie.v11.state'];
 
 const DEFAULT_STATE = {
   family: [
@@ -23,6 +23,9 @@ const DEFAULT_STATE = {
     ],
     bridgeUrl: '',
     bridgeToken: '',
+    bridgePairCode: '',
+    bridgeInboxCursor: '',
+    bridgeUpdatesCursor: '',
     householdGroupId: '',
     autoAssignRules: [
       { keyword: 'zaara', target: 'zaara' },
@@ -40,6 +43,7 @@ const DEFAULT_STATE = {
   },
   ui: {
     calMode: '2w',
+    bridgeApplied: [],
     calAnchor: new Date().toISOString(),
     calFilter: { memberId:'all', type:'all', location:'' }
   }

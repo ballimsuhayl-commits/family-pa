@@ -1,13 +1,13 @@
 {
   "name": "rosie-brain-worker",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "version": "15.0.0",
+  "description": "Rosie Brain Cloudflare Worker (WhatsApp inbound + bridge API)",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "wrangler": "^3.50.0"
+    "wrangler": "^3.0.0"
   }
 }
