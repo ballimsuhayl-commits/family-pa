@@ -905,19 +905,21 @@ function renderInbox(state, render){
 async function syncInbox(state, render){
   const url = (state.settings.bridgeUrl||'').trim();
   const token = (state.settings.bridgeToken||'').trim();
+  const gid = (state.settings.householdId||'family').trim() || 'family';
   if(!url || !token){
     toast('Bridge not configured');
     setHash('#/settings');
     return;
   }
   try{
-    const res = await fetch(url.replace(/\/$/,'') + '/api/inbox?gid=' + encodeURIComponent((state.settings.householdId||'family').trim()||'family') + ', {
+    const endpoint = url.replace(/\/$/,'') + '/api/inbox?gid=' + encodeURIComponent(gid);
+    const res = await fetch(endpoint, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
     if(!res.ok) throw new Error('bad');
     const data = await res.json();
     if(Array.isArray(data.items)){
-      const existing = new Set(state.inbox.map(i=>i.id));
+      const existing = new Set((state.inbox||[]).map(i=>i.id));
       for(const it of data.items){
         if(!it.id) it.id = uid('in');
         if(existing.has(it.id)) continue;
@@ -926,121 +928,15 @@ async function syncInbox(state, render){
       saveState(state);
       toast('Synced ✓');
       render();
-    }else toast('No items');
+    }else{
+      toast('No items');
+    }
   }catch(e){
     toast('Sync failed');
   }
 }
 
-
-async function pairBridge(state, render){
-  const url = (state.settings.bridgeUrl||'').trim();
-  const code = (state.settings.pairingCode||'').trim();
-  const gid = (state.settings.householdId||'family').trim() || 'family';
-  if(!url || !code){
-    toast('Add Bridge URL + pairing code');
-    return;
-  }
-  try{
-    const res = await fetch(url.replace(/\/$/,'') + '/api/pair', {
-      method:'POST',
-      headers:{ 'content-type':'application/json' },
-      body: JSON.stringify({ gid, pairingCode: code, deviceId: 'rosie_' + Math.random().toString(16).slice(2) })
-    });
-    const data = await res.json().catch(()=>null);
-    if(!res.ok || !data?.ok) throw new Error(data?.error || 'pair failed');
-    state.settings.bridgeToken = data.token;
-    saveState(state);
-    toast('Paired ✓');
-    render();
-  }catch(e){
-    toast('Pair failed');
-  }
-}
-
-async function exportBridgeBackup(state){
-  const url = (state.settings.bridgeUrl||'').trim();
-  const token = (state.settings.bridgeToken||'').trim();
-  const gid = (state.settings.householdId||'family').trim() || 'family';
-  if(!url || !token){ toast('Bridge not configured'); return; }
-  try{
-    const res = await fetch(url.replace(/\/$/,'') + '/api/backup/export?full=true&gid=' + encodeURIComponent(gid), {
-      headers:{ 'Authorization':'Bearer ' + token }
-    });
-    if(!res.ok) throw new Error('bad');
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'rosie-bridge-backup-' + gid + '.json';
-    document.body.appendChild(a); a.click(); a.remove();
-    toast('Backup downloaded');
-  }catch(e){
-    toast('Backup failed');
-  }
-}
-
-async function importBridgeBackup(state, file){
-  const url = (state.settings.bridgeUrl||'').trim();
-  const token = (state.settings.bridgeToken||'').trim();
-  const gid = (state.settings.householdId||'family').trim() || 'family';
-  if(!url || !token){ toast('Bridge not configured'); return; }
-  try{
-    const text = await file.text();
-    const data = JSON.parse(text);
-    const items = Array.isArray(data) ? data : (data.items || []);
-    const res = await fetch(url.replace(/\/$/,'') + '/api/backup/import?gid=' + encodeURIComponent(gid), {
-      method:'POST',
-      headers:{ 'Authorization':'Bearer ' + token, 'content-type':'application/json' },
-      body: JSON.stringify({ items })
-    });
-    const out = await res.json().catch(()=>null);
-    if(!res.ok || !out?.ok) throw new Error('bad');
-    toast('Backup imported ✓');
-  }catch(e){
-    toast('Import failed');
-  }
-}
-
-async function fetchRecentStatuses(state){
-  const url = (state.settings.bridgeUrl||'').trim();
-  const token = (state.settings.bridgeToken||'').trim();
-  const gid = (state.settings.householdId||'family').trim() || 'family';
-  if(!url || !token){ toast('Bridge not configured'); return null; }
-  try{
-    const res = await fetch(url.replace(/\/$/,'') + '/api/status/recent?gid=' + encodeURIComponent(gid), {
-      headers:{ 'Authorization':'Bearer ' + token }
-    });
-    if(!res.ok) throw new Error('bad');
-    const data = await res.json();
-    return data.items || [];
-  }catch(e){
-    toast('Status fetch failed');
-    return null;
-  }
-}
-
-async function sendWhatsAppTest(state){
-  const url = (state.settings.bridgeUrl||'').trim();
-  const token = (state.settings.bridgeToken||'').trim();
-  const gid = (state.settings.householdId||'family').trim() || 'family';
-  const to = (state.settings.testWhatsAppTo||'').trim();
-  if(!to){ toast('Add test number'); return; }
-  if(!url || !token){ toast('Bridge not configured'); return; }
-  try{
-    const res = await fetch(url.replace(/\/$/,'') + '/api/outbound/sendTest?gid=' + encodeURIComponent(gid), {
-      method:'POST',
-      headers:{ 'Authorization':'Bearer ' + token, 'content-type':'application/json' },
-      body: JSON.stringify({ to, text: 'Rosie test ping ✓' })
-    });
-    const data = await res.json().catch(()=>null);
-    if(!res.ok || !data?.ok) throw new Error('bad');
-    toast('Sent ✓');
-  }catch(e){
-    toast('Send failed');
-  }
-}
-
-function renderSettings(state, render){
+function renderSettings(state, render){(state, render){
   const s = state.settings;
 
   const bridgeUrl = el('input',{value: s.bridgeUrl||'', placeholder:'https://<worker-domain>'});
