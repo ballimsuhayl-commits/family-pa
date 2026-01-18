@@ -227,3 +227,76 @@ hr.sep{border:none; border-top:1px solid rgba(17,24,39,.08); margin:10px 0}
 @media (min-width: 900px){
   .app{max-width: 740px; margin: 0 auto;}
 }
+
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg1:#0b1020;
+    --bg2:#0b1226;
+    --card: rgba(20,24,36,.72);
+    --ink:#e5e7eb;
+    --muted:#a1a1aa;
+    --shadow: 0 10px 40px rgba(0,0,0,.45);
+    --brand:#a78bfa;
+  }
+  .chip{background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.10);}
+  .pill{background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.10); color: var(--ink);}
+  input, textarea, select{ background: rgba(255,255,255,.06) !important; color: var(--ink) !important; }
+  .card{ border-color: rgba(255,255,255,.10); }
+  .bottomnav .bar{ border-color: rgba(255,255,255,.10); background: rgba(15,18,30,.70); }
+}
+
+:focus-visible{
+  outline: 3px solid rgba(124,58,237,.45);
+  outline-offset: 2px;
+}
+
+/* ITER22 UI polish */
+.input{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(17,24,39,.10);
+  background: rgba(255,255,255,.78);
+}
+.input span{display:inline-grid; place-items:center; width:20px; height:20px; color: rgba(124,58,237,.9);}
+.input input{
+  border:0;
+  background:transparent;
+  width:100%;
+  font-size:14px;
+  outline:none;
+}
+
+.chip.active{
+  background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(236,72,153,.14));
+  border-color: rgba(124,58,237,.30);
+}
+.card.list .item{
+  transition: transform .08s ease, background .12s ease;
+}
+.card.list .item:active{
+  transform: scale(.99);
+}
+.tag{
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid rgba(17,24,39,.10);
+  background: rgba(255,255,255,.60);
+}
+.toast{
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.bottomnav .navbtn{
+  transition: transform .08s ease, background .12s ease;
+}
+.bottomnav .navbtn:active{ transform: scale(.98); }
+.bottomnav .navbtn.active{
+  background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(236,72,153,.12));
+  border: 1px solid rgba(124,58,237,.25);
+}

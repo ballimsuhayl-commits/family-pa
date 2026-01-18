@@ -1,5 +1,5 @@
-const KEY = 'rosie.v21.state';
-const OLD_KEYS = ['rosie.v20.state','rosie.v19.state','rosie.v18.state','rosie.v17.state','rosie.v16.state','rosie.v15.state','rosie.v14.state','rosie.v13.state','rosie.v12.state','rosie.v11.state'];
+const KEY = 'rosie.v22.state';
+const OLD_KEYS = ['rosie.v21.state','rosie.v20.state','rosie.v19.state','rosie.v18.state','rosie.v17.state','rosie.v16.state','rosie.v15.state','rosie.v14.state','rosie.v13.state','rosie.v12.state','rosie.v11.state'];
 
 const DEFAULT_STATE = {
   family: [
@@ -43,7 +43,9 @@ const DEFAULT_STATE = {
   ui: {
     calMode: '2w',
     calAnchor: new Date().toISOString(),
-    calFilter: { memberId:'all', type:'all', location:'' }
+    calFilter: { memberId:'all', type:'all', location:'' },
+    inboxQuery: '',
+    inboxFilter: 'all' // all | unfiled | filed
   }
 };
 

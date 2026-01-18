@@ -303,6 +303,9 @@ function renderLists(state, render){
       el('div',{class:'grow'},[
         el('h3',{text: t.title}),
         el('p',{text: `${who || 'Unassigned'}${dueTxt}`}),
+        el('div',{class:'row', style:'gap:8px; flex-wrap:wrap;'},[
+          el('span',{class:'tag', text:'From: ' + (t.source||'app')})
+        ]),
         t.priority==='high' ? el('div',{class:'badge danger', html: icons.list(16)+'<span>High</span>'}) : null
       ]),
       el('div',{class:'actions'},[
@@ -318,7 +321,7 @@ function renderLists(state, render){
     return el('div',{class:'item'},[
       el('div',{class:'grow'},[
         el('h3',{text: g.text}),
-        el('p',{text: g.source ? 'From: '+g.source : ''})
+        el('div',{class:'row', style:'gap:8px; flex-wrap:wrap;'},[ el('span',{class:'tag', text:'From: ' + (g.source||'app')}) ])
       ]),
       el('div',{class:'actions'},[
         el('button',{class:'pill small primary', html: icons.check(18), onClick: ()=>{
@@ -786,54 +789,116 @@ function renderCalendar(state, render){
 }
 
 function renderInbox(state, render){
-  const items = (state.inbox||[]).slice(0,60);
+  state.ui = state.ui || {};
+  if(typeof state.ui.inboxQuery !== 'string') state.ui.inboxQuery = '';
+  if(!state.ui.inboxFilter) state.ui.inboxFilter = 'all';
+
+  const q = (state.ui.inboxQuery||'').trim().toLowerCase();
+  const filter = state.ui.inboxFilter || 'all';
+
+  let items = (state.inbox||[]).slice(0,200);
+
+  items = items.filter(msg=>{
+    const filed = !!(msg.receipt && (msg.receipt.events?.length || msg.receipt.tasks?.length || msg.receipt.groceries?.length));
+    if(filter === 'filed' && !filed) return false;
+    if(filter === 'unfiled' && filed) return false;
+    if(!q) return true;
+    const hay = `${msg.from||''} ${msg.text||''} ${msg.source||''}`.toLowerCase();
+    return hay.includes(q);
+  });
+
+  const search = el('input',{
+    value: state.ui.inboxQuery||'',
+    placeholder:'Search inbox (Zaara, goggles, swimming)…',
+    onInput: (e)=>{ state.ui.inboxQuery = e.target.value; saveState(state); render(); }
+  });
+
+  const chip = (key,label)=> el('button',{
+    class:'chip' + (state.ui.inboxFilter===key?' active':''),
+    onClick: ()=>{ state.ui.inboxFilter = key; saveState(state); render(); }
+  },[ el('span',{text:label}) ]);
+
+  const controls = el('div',{class:'card'},[
+    el('div',{class:'row', style:'gap:10px;'},[
+      el('div',{class:'input', style:'flex:1;'},[ el('span',{html: icons.search(18)}), search ]),
+      el('button',{class:'pill', html: icons.list(18) + '<span>Sync</span>', onClick: ()=> syncInbox(state, render)})
+    ]),
+    el('div',{class:'chips', style:'margin-top:10px;'},[
+      chip('all','All'),
+      chip('unfiled','Unfiled'),
+      chip('filed','Filed')
+    ])
+  ]);
+
   const list = el('div',{class:'card list'}, items.length ? items.map(msg => {
     const t = new Date(msg.ts);
     const receiptParts = [];
     if(msg.receipt?.events?.length) receiptParts.push(`📅 ${msg.receipt.events.length}`);
     if(msg.receipt?.tasks?.length) receiptParts.push(`✅ ${msg.receipt.tasks.length}`);
     if(msg.receipt?.groceries?.length) receiptParts.push(`🛒 ${msg.receipt.groceries.length}`);
+
+    const source = (msg.source || 'app');
+    const sourceLabel = source === 'whatsapp' ? 'WhatsApp' :
+      source === 'import' ? 'Import' :
+      source === 'voice' ? 'Voice' :
+      source === 'paste' ? 'Paste' : 'App';
+
+    const filed = receiptParts.length > 0;
+
+    const status = msg.waStatus?.status;
+    const statusText = status ? `• ${status}` : '';
+    const statusTag = status ? el('span',{class:'tag', text:`Delivery: ${status}`}) : null;
+
     return el('div',{class:'item'},[
       el('div',{class:'grow'},[
-        el('h3',{text: `${msg.from} · ${t.toLocaleString()}`}),
-        el('p',{text: msg.text}),
-        el('div',{class:'tag', text: receiptParts.length ? `Filed: ${receiptParts.join('  ')}` : 'Unfiled note'})
+        el('div',{class:'row', style:'justify-content:space-between; align-items:flex-start; gap:10px;'},[
+          el('div',{class:'col', style:'gap:4px;'},[
+            el('h3',{text: `${msg.from} · ${t.toLocaleString()}`}),
+            el('div',{class:'row', style:'gap:8px; flex-wrap:wrap;'},[
+              el('span',{class:'tag', text:`From: ${sourceLabel}`}),
+              filed ? el('span',{class:'tag', text:`Filed: ${receiptParts.join('  ')}`}) : el('span',{class:'tag', text:'Unfiled'}),
+              status ? el('span',{class:'tag', text:`${status}`}) : el('span',{class:'tag', text:' '})
+            ])
+          ]),
+        ]),
+        el('p',{text: msg.text})
       ]),
       el('div',{class:'actions'},[
-        el('button',{class:'pill small', html: icons.plus(18), onClick: ()=>{
-          const res = routeCapture(state, msg.text, 'inbox');
-          applyRouted(state, res, { from: msg.from, text: msg.text, source:'inbox' });
+        el('button',{class:'pill small primary', html: icons.check(16) + '<span>Sort ✓</span>', onClick: ()=>{
+          const routed = routeCapture(state, msg.text, msg.source||'inbox');
+          // Apply without creating a duplicate inbox item: update existing message receipt instead.
+          const receipt = applyRoutedToStateOnly(state, routed);
+          msg.receipt = receipt;
           saveState(state);
           toast('Sorted ✓');
           render();
+        }}),
+        el('button',{class:'pill small', text:'Delete', onClick: ()=>{
+          state.inbox = (state.inbox||[]).filter(x=> x!==msg);
+          saveState(state); render();
         }})
       ])
     ]);
   }) : [
     el('div',{class:'item'},[
       el('div',{class:'grow'},[
-        el('h3',{text:'Inbox is empty'}),
-        el('p',{text:'When WhatsApp bridge is connected, messages show up here automatically.'})
+        el('h3',{text:'Inbox is calm'}),
+        el('p',{text:'When kids/staff message Rosie, you’ll see it here. For now, use Quick Capture or import the school calendar.'})
       ])
     ])
   ]);
 
-  const syncBtn = el('button',{class:'pill', html: icons.list(18) + '<span>Sync WhatsApp</span>', onClick: ()=> syncInbox(state, render) });
-
   return el('div',{class:'shell'},[
     header(),
     el('div',{class:'section'},[
-      el('h2',{text:'Inbox'}),
-      el('div',{class:'card hero'},[
-        el('div',{class:'rosie', html: icons.list(28)}),
-        el('div',{class:'msg'},[
-          el('p',{class:'title', text:'Messages become action.'}),
-          el('p',{class:'hint', text:'Kids and staff can message Rosie. Rosie files it and keeps everyone aligned.'})
-        ]),
-        el('div',{class:'actions'},[syncBtn])
+      el('div',{class:'row', style:'justify-content:space-between; align-items:center;'},[
+        el('h2',{text:'Inbox'}),
+        el('div',{class:'tag', text:`${items.length} shown`})
       ]),
+      controls,
       list
-    ])
+    ]),
+    nav()
   ]);
 }
 

@@ -1,4 +1,4 @@
-# Rosie – Family Assistant (ITER21)
+# Rosie – Family Assistant (ITER22 UI/UX)
 
 This repo is a **static GitHub Pages** app (root-only assets) plus an optional **Cloudflare Worker** bridge.
 
