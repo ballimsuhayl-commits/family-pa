@@ -139,59 +139,28 @@ function quickCapture(state, render){
 
 function applyRouted(state, routed, inboxMeta){
   const receipt = { events:[], tasks:[], groceries:[] };
-
-  // Dedup-safe inserts by id
-  const upsertMany = (arrName, items)=>{
-    const arr = state[arrName] || (state[arrName]=[]);
-    const existing = new Set(arr.map(x=>x.id));
-    for(const it of items||[]){
-      if(!it?.id) continue;
-      if(existing.has(it.id)) continue;
-      arr.unshift(it);
-      existing.add(it.id);
-    }
-  };
-
-  upsertMany('groceries', routed.groceries);
-  for(const g of routed.groceries||[]) receipt.groceries.push(g.id);
-
-  upsertMany('tasks', routed.tasks);
-  for(const t of routed.tasks||[]) receipt.tasks.push(t.id);
-
-  upsertMany('events', routed.events);
-  for(const e of routed.events||[]) receipt.events.push(e.id);
-
-  // If this came from an existing inbox message, update it in-place
-  if(inboxMeta && inboxMeta.id){
-    const msg = (state.inbox||[]).find(x=>x.id===inboxMeta.id);
-    if(msg){
-      msg.receipt = receipt;
-      msg.filedAt = nowIso();
-    }else{
-      // fall back to adding a new entry
-      (state.inbox|| (state.inbox=[])).unshift({
-        id: inboxMeta.id,
-        ts: inboxMeta.ts || nowIso(),
-        from: inboxMeta.from || 'Unknown',
-        text: inboxMeta.text || '',
-        source: inboxMeta.source || 'app',
-        receipt,
-        filedAt: nowIso()
-      });
-    }
-  }else if(inboxMeta && inboxMeta.text){
-    (state.inbox|| (state.inbox=[])).unshift({
+  for(const g of routed.groceries||[]){
+    state.groceries.unshift(g);
+    receipt.groceries.push(g.id);
+  }
+  for(const t of routed.tasks||[]){
+    state.tasks.unshift(t);
+    receipt.tasks.push(t.id);
+  }
+  for(const e of routed.events||[]){
+    state.events.unshift(e);
+    receipt.events.push(e.id);
+  }
+  if(inboxMeta && inboxMeta.text){
+    state.inbox.unshift({
       id: uid('in'),
       ts: nowIso(),
       from: inboxMeta.from || 'Unknown',
       text: inboxMeta.text,
       source: inboxMeta.source || 'app',
-      receipt,
-      filedAt: nowIso()
+      receipt
     });
   }
-
-  return receipt;
 }
 
 function kpis(state, render){
@@ -832,10 +801,8 @@ function renderInbox(state, render){
       ]),
       el('div',{class:'actions'},[
         el('button',{class:'pill small', html: icons.plus(18), onClick: ()=>{
-          const res = routeCapture(state, msg.text, 'inbox', { seed: msg.id });
-          const receipt = applyRouted(state, res, { id: msg.id, ts: msg.ts, from: msg.from, text: msg.text, source: msg.source || 'inbox' });
-          // Share the filing so both parents stay aligned
-          bridgePostFile(state, msg, res, receipt).catch(()=>{});
+          const res = routeCapture(state, msg.text, 'inbox');
+          applyRouted(state, res, { from: msg.from, text: msg.text, source:'inbox' });
           saveState(state);
           toast('Sorted ✓');
           render();
@@ -870,172 +837,153 @@ function renderInbox(state, render){
   ]);
 }
 
-function bridgeBase(state){
-  return (state.settings.bridgeUrl||'').trim().replace(/\/$/,'');
-}
-function bridgeToken(state){
-  return (state.settings.bridgeToken||'').trim();
-}
-function bridgeConfigured(state){
-  return !!(bridgeBase(state) && bridgeToken(state));
-}
-async function bridgeJson(state, path, opts={}){
-  const base = bridgeBase(state);
-  const token = bridgeToken(state);
-  const headers = Object.assign({}, opts.headers||{}, {
-    'Authorization': 'Bearer ' + token
-  });
-  if(opts.json){
-    headers['Content-Type'] = 'application/json';
-    opts.body = JSON.stringify(opts.json);
-    delete opts.json;
-  }
-  const res = await fetch(base + path, { ...opts, headers });
-  const txt = await res.text();
-  let data = null;
-  try{ data = txt ? JSON.parse(txt) : null; }catch(e){}
-  return { ok: res.ok, status: res.status, data, text: txt };
-}
-function upsertById(targetArr, items){
-  const arr = targetArr || [];
-  const existing = new Set(arr.map(x=>x.id));
-  for(const it of items||[]){
-    if(!it?.id) continue;
-    if(existing.has(it.id)) continue;
-    arr.unshift(it);
-    existing.add(it.id);
-  }
-  return arr;
-}
-function applyBridgeFile(state, file){
-  // idempotency
-  state.ui.bridgeApplied = state.ui.bridgeApplied || [];
-  if(state.ui.bridgeApplied.includes(file.messageId)) return;
-
-  const deltas = file.deltas || {};
-  state.events = upsertById(state.events||[], deltas.events||[]);
-  state.tasks = upsertById(state.tasks||[], deltas.tasks||[]);
-  state.groceries = upsertById(state.groceries||[], deltas.groceries||[]);
-
-  // mark inbox message as filed if present
-  const msg = (state.inbox||[]).find(m=>m.id===file.messageId);
-  if(msg){
-    msg.receipt = file.receipt || msg.receipt;
-    msg.filedAt = file.filedAt || msg.filedAt || nowIso();
-  }
-
-  state.ui.bridgeApplied.unshift(file.messageId);
-  // keep small
-  if(state.ui.bridgeApplied.length > 500) state.ui.bridgeApplied.length = 500;
-}
-
-async function bridgePostFile(state, msg, routed, receipt){
-  if(!bridgeConfigured(state)) return;
-  // Only post if this message came from the bridge (or is explicitly marked)
-  if(msg.source !== 'whatsapp' && msg.source !== 'bridge') return;
-
-  const payload = {
-    v: 1,
-    messageId: msg.id,
-    filedAt: nowIso(),
-    from: msg.from,
-    text: msg.text,
-    receipt,
-    deltas: {
-      events: routed.events||[],
-      tasks: routed.tasks||[],
-      groceries: routed.groceries||[]
-    }
-  };
-  const r = await bridgeJson(state, '/api/file', { method:'POST', json: payload });
-  if(!r.ok){
-    // If already filed on another device, pull it and apply
-    if(r.status===409 && r.data?.existing){
-      applyBridgeFile(state, r.data.existing);
-      saveState(state);
-    }
-  }
-}
-
 async function syncInbox(state, render){
-  if(!bridgeConfigured(state)){
+  const url = (state.settings.bridgeUrl||'').trim();
+  const token = (state.settings.bridgeToken||'').trim();
+  if(!url || !token){
     toast('Bridge not configured');
     setHash('#/settings');
     return;
   }
-
-  // 1) Pull filings first (keeps parents aligned)
   try{
-    const cur = state.settings.bridgeUpdatesCursor || '';
-    const q = cur ? ('?cursor=' + encodeURIComponent(cur)) : '';
-    const r = await bridgeJson(state, '/api/updates' + q, { method:'GET' });
-    if(r.ok && r.data){
-      if(Array.isArray(r.data.items)){
-        for(const file of r.data.items){ applyBridgeFile(state, file); }
-      }
-      if(r.data.cursor) state.settings.bridgeUpdatesCursor = r.data.cursor;
-    }
-  }catch(e){}
-
-  // 2) Pull inbound WhatsApp messages
-  try{
-    const cur = state.settings.bridgeInboxCursor || '';
-    const q = cur ? ('?cursor=' + encodeURIComponent(cur)) : '';
-    const r = await bridgeJson(state, '/api/inbox' + q, { method:'GET' });
-    if(!r.ok) throw new Error('bad');
-    const data = r.data || {};
+    const res = await fetch(url.replace(/\/$/,'') + '/api/inbox?gid=' + encodeURIComponent((state.settings.householdId||'family').trim()||'family') + ', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if(!res.ok) throw new Error('bad');
+    const data = await res.json();
     if(Array.isArray(data.items)){
-      const existing = new Set((state.inbox||[]).map(i=>i.id));
+      const existing = new Set(state.inbox.map(i=>i.id));
       for(const it of data.items){
-        if(!it.id) continue;
+        if(!it.id) it.id = uid('in');
         if(existing.has(it.id)) continue;
-        it.source = it.source || 'whatsapp';
         state.inbox.unshift(it);
       }
-      if(data.cursor) state.settings.bridgeInboxCursor = data.cursor;
       saveState(state);
       toast('Synced ✓');
       render();
     }else toast('No items');
   }catch(e){
-    saveState(state);
     toast('Sync failed');
   }
 }
 
 
+async function pairBridge(state, render){
+  const url = (state.settings.bridgeUrl||'').trim();
+  const code = (state.settings.pairingCode||'').trim();
+  const gid = (state.settings.householdId||'family').trim() || 'family';
+  if(!url || !code){
+    toast('Add Bridge URL + pairing code');
+    return;
+  }
+  try{
+    const res = await fetch(url.replace(/\/$/,'') + '/api/pair', {
+      method:'POST',
+      headers:{ 'content-type':'application/json' },
+      body: JSON.stringify({ gid, pairingCode: code, deviceId: 'rosie_' + Math.random().toString(16).slice(2) })
+    });
+    const data = await res.json().catch(()=>null);
+    if(!res.ok || !data?.ok) throw new Error(data?.error || 'pair failed');
+    state.settings.bridgeToken = data.token;
+    saveState(state);
+    toast('Paired ✓');
+    render();
+  }catch(e){
+    toast('Pair failed');
+  }
+}
+
+async function exportBridgeBackup(state){
+  const url = (state.settings.bridgeUrl||'').trim();
+  const token = (state.settings.bridgeToken||'').trim();
+  const gid = (state.settings.householdId||'family').trim() || 'family';
+  if(!url || !token){ toast('Bridge not configured'); return; }
+  try{
+    const res = await fetch(url.replace(/\/$/,'') + '/api/backup/export?full=true&gid=' + encodeURIComponent(gid), {
+      headers:{ 'Authorization':'Bearer ' + token }
+    });
+    if(!res.ok) throw new Error('bad');
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'rosie-bridge-backup-' + gid + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Backup downloaded');
+  }catch(e){
+    toast('Backup failed');
+  }
+}
+
+async function importBridgeBackup(state, file){
+  const url = (state.settings.bridgeUrl||'').trim();
+  const token = (state.settings.bridgeToken||'').trim();
+  const gid = (state.settings.householdId||'family').trim() || 'family';
+  if(!url || !token){ toast('Bridge not configured'); return; }
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    const items = Array.isArray(data) ? data : (data.items || []);
+    const res = await fetch(url.replace(/\/$/,'') + '/api/backup/import?gid=' + encodeURIComponent(gid), {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer ' + token, 'content-type':'application/json' },
+      body: JSON.stringify({ items })
+    });
+    const out = await res.json().catch(()=>null);
+    if(!res.ok || !out?.ok) throw new Error('bad');
+    toast('Backup imported ✓');
+  }catch(e){
+    toast('Import failed');
+  }
+}
+
+async function fetchRecentStatuses(state){
+  const url = (state.settings.bridgeUrl||'').trim();
+  const token = (state.settings.bridgeToken||'').trim();
+  const gid = (state.settings.householdId||'family').trim() || 'family';
+  if(!url || !token){ toast('Bridge not configured'); return null; }
+  try{
+    const res = await fetch(url.replace(/\/$/,'') + '/api/status/recent?gid=' + encodeURIComponent(gid), {
+      headers:{ 'Authorization':'Bearer ' + token }
+    });
+    if(!res.ok) throw new Error('bad');
+    const data = await res.json();
+    return data.items || [];
+  }catch(e){
+    toast('Status fetch failed');
+    return null;
+  }
+}
+
+async function sendWhatsAppTest(state){
+  const url = (state.settings.bridgeUrl||'').trim();
+  const token = (state.settings.bridgeToken||'').trim();
+  const gid = (state.settings.householdId||'family').trim() || 'family';
+  const to = (state.settings.testWhatsAppTo||'').trim();
+  if(!to){ toast('Add test number'); return; }
+  if(!url || !token){ toast('Bridge not configured'); return; }
+  try{
+    const res = await fetch(url.replace(/\/$/,'') + '/api/outbound/sendTest?gid=' + encodeURIComponent(gid), {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer ' + token, 'content-type':'application/json' },
+      body: JSON.stringify({ to, text: 'Rosie test ping ✓' })
+    });
+    const data = await res.json().catch(()=>null);
+    if(!res.ok || !data?.ok) throw new Error('bad');
+    toast('Sent ✓');
+  }catch(e){
+    toast('Send failed');
+  }
+}
+
 function renderSettings(state, render){
   const s = state.settings;
 
   const bridgeUrl = el('input',{value: s.bridgeUrl||'', placeholder:'https://<worker-domain>'});
-  const bridgeTok = el('input',{value: s.bridgeToken||'', placeholder:'token'});
-  const pairCode = el('input',{value: s.bridgePairCode||'', placeholder:'pairing code (Suhayl only)'}); 
-  const pairBtn = el('button',{class:'pill small primary', text:'Pair & save token', onClick: async ()=>{
-    const base = (bridgeUrl.value||'').trim().replace(/\/$/,'');
-    const code = (pairCode.value||'').trim();
-    if(!base){ toast('Enter Bridge URL'); return; }
-    if(!code){ toast('Enter pairing code'); return; }
-    try{
-      const res = await fetch(base + '/api/pair', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ code })
-      });
-      const data = await res.json().catch(()=>null);
-      if(res.ok && data?.token){
-        bridgeTok.value = data.token;
-        s.bridgeToken = data.token;
-        s.bridgePairCode = code;
-        saveState(state);
-        toast('Paired ✓');
-      }else{
-        toast('Pair failed');
-      }
-    }catch(e){
-      toast('Pair failed');
-    }
-  }});
+  const householdId = el('input',{value: s.householdId||'family', placeholder:'household id (e.g. family)'});
+  const pairingCode = el('input',{value: s.pairingCode||'', placeholder:'pairing code (Suhayl only)'});
+  const bridgeTok = el('input',{value: s.bridgeToken||'', placeholder:'token (auto after Pair)'});
   const groupId = el('input',{value: s.householdGroupId||'', placeholder:'(optional) WhatsApp group/conversation id'});
+  const testTo = el('input',{value: s.testWhatsAppTo||'', placeholder:'test WhatsApp number (E.164, e.g. 4477...)'});
 
   const rulesPeople = el('textarea',{style:'width:100%; min-height:120px; border-radius:18px; border:1px solid rgba(17,24,39,.12); padding:12px;'},[]);
   const rulesType = el('textarea',{style:'width:100%; min-height:120px; border-radius:18px; border:1px solid rgba(17,24,39,.12); padding:12px;'},[]);
@@ -1045,8 +993,11 @@ function renderSettings(state, render){
 
   const saveBtn = el('button',{class:'pill primary', html: icons.check(18) + '<span>Save</span>', onClick: ()=>{
     s.bridgeUrl = bridgeUrl.value.trim();
+    s.householdId = householdId.value.trim() || 'family';
+    s.pairingCode = pairingCode.value.trim();
     s.bridgeToken = bridgeTok.value.trim();
     s.householdGroupId = groupId.value.trim();
+    s.testWhatsAppTo = testTo.value.trim();
     try{
       s.autoAssignRules = JSON.parse(rulesPeople.value || '[]');
       s.autoTypeRules = JSON.parse(rulesType.value || '[]');
@@ -1069,22 +1020,30 @@ function renderSettings(state, render){
 
   const importInput = el('input',{type:'file', accept:'application/json'});
   importInput.onchange = async ()=>{
-    const f = importInput.files?.[0];
-    if(!f) return;
-    try{
-      const txt = await f.text();
-      const parsed = JSON.parse(txt);
-      const merged = loadState();
-      Object.assign(merged, parsed);
-      merged.settings = { ...loadState().settings, ...(parsed.settings||{}) };
-      merged.ui = { ...loadState().ui, ...(parsed.ui||{}) };
-      saveState(merged);
-      toast('Imported ✓');
-      location.reload();
-    }catch(e){
-      toast('Import failed');
-    }
-  };
+  const f = importInput.files?.[0];
+  if(!f) return;
+  // If a bridge token is configured, treat this as a bridge backup import.
+  if((state.settings.bridgeUrl||'').trim() && (state.settings.bridgeToken||'').trim()){
+    await importBridgeBackup(state, f);
+    importInput.value = '';
+    return;
+  }
+  try{
+    const txt = await f.text();
+    const parsed = JSON.parse(txt);
+    const merged = loadState();
+    Object.assign(merged, parsed);
+    merged.settings = { ...loadState().settings, ...(parsed.settings||{}) };
+    merged.ui = { ...loadState().ui, ...(parsed.ui||{}) };
+    saveState(merged);
+    toast('Imported ✓');
+    location.reload();
+  }catch(e){
+    toast('Import failed');
+  }finally{
+    importInput.value = '';
+  }
+};
 
   return el('div',{class:'shell'},[
     header(),
@@ -1099,15 +1058,24 @@ function renderSettings(state, render){
           ])
         ]),
         el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Bridge URL'}), bridgeUrl ]) ]),
-        el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Bridge Token'}), bridgeTok ]) ]),
+        el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Household ID'}), householdId, el('div',{class:'tag', text:'Used for multi-household routing (ITER21). Default: family.'}) ]) ]),
+        el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Pairing code'}), pairingCode, el('div',{class:'tag', text:'Suhayl enters this once to pair.'}) ]) ]),
+        el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Bridge Token'}), bridgeTok, el('div',{class:'tag', text:'Auto-filled after Pair. Keep private.'}) ]) ]),
+        el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Test WhatsApp number'}), testTo, el('div',{class:'tag', text:'For “Send test ping” only. E.164 format.'}) ]) ]),
         el('div',{class:'item'},[
           el('div',{class:'grow'},[
-            el('h3',{text:'Pairing code'}),
-            pairCode,
-            el('div',{class:'actions', style:'margin-top:8px;'},[ pairBtn ]),
-            el('div',{class:'tag', text:'Suhayl only. Once paired, export a backup and import on Nasima’s phone.'})
+            el('h3',{text:'Bridge actions'}),
+            el('div',{class:'actions'},[
+              el('button',{class:'pill primary', html: icons.check(18) + '<span>Pair</span>', onClick: ()=> pairBridge(state, render)}),
+              el('button',{class:'pill', html: icons.list(18) + '<span>Sync Inbox</span>', onClick: ()=> syncInbox(state, render)}),
+              el('button',{class:'pill', text:'Export bridge backup', onClick: ()=> exportBridgeBackup(state)}),
+              el('button',{class:'pill', text:'Import bridge backup', onClick: ()=> importInput.click() }),
+              el('button',{class:'pill', text:'View delivery status', onClick: async ()=>{ const items = await fetchRecentStatuses(state); if(!items) return; alert(items.slice(0,10).map(x=>`${x.status} · ${x.recipient_id||''} · ${new Date(x.timestamp||0).toLocaleString()}`).join('\n') || 'No recent statuses'); }}),
+              el('button',{class:'pill', text:'Send test ping', onClick: ()=> sendWhatsAppTest(state)})
+            ])
           ])
         ]),
+
         el('div',{class:'item'},[ el('div',{class:'grow'},[ el('h3',{text:'Household Group ID'}), groupId, el('div',{class:'tag', text:'Only if your WhatsApp API account supports group IDs.'}) ]) ]),
         el('div',{class:'item'},[
           el('div',{class:'grow'},[

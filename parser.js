@@ -1,10 +1,5 @@
 import { uid } from './store.js';
 
-function idFactory(seed){
-  let n = 0;
-  return (prefix)=> seed ? `${prefix}_${seed}_${++n}` : uid(prefix);
-}
-
 const NAME_MAP = [
   { key: /\bnasima\b/i, id:'nasima' },
   { key: /\bsuhayl\b/i, id:'suhayl' },
@@ -69,8 +64,7 @@ function splitItems(text){
   return text.split(/[\n,;]/).map(s=>s.trim()).filter(Boolean);
 }
 
-export function routeCapture(state, text, source='app', opts={}){
-  const id = idFactory(opts.seed || null);
+export function routeCapture(state, text, source='app'){
   const inferType = (lower)=>{
     if(/\b(lisa|jabu)\b/.test(lower)) return 'Staff';
     if(/\b(school|tuition|swimming|parents evening|exam|sports day)\b/.test(lower)) return 'School';
@@ -82,12 +76,12 @@ export function routeCapture(state, text, source='app', opts={}){
   const people = detectPeople(text);
   const lower = text.toLowerCase();
   const out = { events:[], tasks:[], groceries:[], notes:[] };
-  const groupId = id('grp');
+  const groupId = uid('grp');
 
   if(/\b(buy|add to groceries|groceries|shopping)\b/.test(lower)){
     const cleaned = text.replace(/\b(buy|add to groceries|groceries|shopping)\b/ig,'').trim();
     for(const it of splitItems(cleaned)){
-      out.groceries.push({ id: id('groc'), text: it, done: false, createdAt: now.toISOString(), source });
+      out.groceries.push({ id: uid('groc'), text: it, done: false, createdAt: now.toISOString(), source });
     }
     return out;
   }
@@ -95,7 +89,7 @@ export function routeCapture(state, text, source='app', opts={}){
   const bring = text.match(/\bbring\s+([^,.]+)\b/i);
   if(bring){
     out.tasks.push({
-      id: id('task'),
+      id: uid('task'),
       title: 'Bring ' + bring[1].trim(),
       assignees: people.length ? people : ['nasima','suhayl'],
       due: null,
@@ -111,7 +105,7 @@ export function routeCapture(state, text, source='app', opts={}){
   if(/\b(tell|ask)\s+(lisa|jabu)\b/i.test(text)){
     const who = /\blisa\b/i.test(text) ? 'lisa' : 'jabu';
     out.tasks.push({
-      id: id('task'),
+      id: uid('task'),
       title: text.replace(/\b(tell|ask)\s+/i,'').trim(),
       assignees: [who],
       due: null,
@@ -135,7 +129,7 @@ export function routeCapture(state, text, source='app', opts={}){
     end.setMinutes(end.getMinutes()+60);
 
     const ev = {
-      id: id('ev'),
+      id: uid('ev'),
       relatedGroupId: groupId,
       type: inferType(lower),
       title: text.replace(/\b(mum|dad)\b/ig,'').trim() || 'Event',
@@ -158,7 +152,7 @@ export function routeCapture(state, text, source='app', opts={}){
   }
 
   if(out.events.length===0 && out.tasks.length===0 && out.groceries.length===0){
-    out.notes.push({ id: id('note'), text, createdAt: now.toISOString(), source });
+    out.notes.push({ id: uid('note'), text, createdAt: now.toISOString(), source });
   }
 
   return out;

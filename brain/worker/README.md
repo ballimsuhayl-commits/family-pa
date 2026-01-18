@@ -1,59 +1,41 @@
-# Rosie Brain (Cloudflare Worker) — ITER15
+# Rosie Brain (Cloudflare Worker)
 
-This Worker connects WhatsApp Cloud API inbound messages to Rosie’s static GitHub Pages app.
+This Worker is the server-side bridge for WhatsApp inbound/outbound, delivery status tracking,
+per-household routing, and KV backup/restore.
 
-## What it does (ITER15)
-- Receives inbound WhatsApp messages via `/webhook`
-- Stores them in Cloudflare KV (private)
-- Provides a private API for the Rosie app:
-  - `POST /api/pair` → exchange pairing code for a bearer token (Suhayl once)
-  - `GET /api/inbox` → list inbound messages
-  - `POST /api/file` → store “what Rosie did” (receipt + deltas) so both parents stay aligned
-  - `GET /api/updates` → list filings to sync to the other phone
+## Quick start
+```bash
+npm i
+npx wrangler login
+npx wrangler kv namespace create INBOX_KV
+# paste KV id into wrangler.toml
+npx wrangler deploy
+```
 
-> ITER16 (outbound reminders) is **not** implemented yet.
+## Required environment variables
+Set these in Cloudflare (Dashboard → Worker → Settings → Variables/Secrets):
 
-## Setup (free tier)
-1) **Create a Cloudflare account** and install Wrangler:
-- `npm i`
-- `npx wrangler login`
+- `VERIFY_TOKEN` (string) — WhatsApp webhook verification token
+- `BRIDGE_SHARED_SECRET` (string, secret) — HMAC secret for signing bearer tokens
+- `PAIRING_CODE` (string) — default 6-digit pairing code (can be rotated per household)
+- `ALLOWED_ORIGINS` (string) — comma-separated allowed origins (e.g. `https://<user>.github.io`)
 
-2) **Create KV namespace**
-- `npx wrangler kv namespace create INBOX_KV`
-- Copy the returned `id` into `wrangler.toml` under `kv_namespaces`.
+### Per-household routing
+- `DEFAULT_GID` (string) — default household id (e.g. `family`)
+- `HOUSEHOLD_MAP_JSON` (string) — JSON mapping WhatsApp `phone_number_id` → `gid`
+  Example:
+  ```json
+  { "1234567890": "family", "999999999": "granny" }
+  ```
 
-3) **Set environment variables**
-In Cloudflare Dashboard → Workers → Settings → Variables (or via Wrangler secrets):
+### WhatsApp outbound (optional)
+- `WA_ACCESS_TOKEN` (secret)
+- `WA_PHONE_NUMBER_ID` (string)
 
-Required:
-- `VERIFY_TOKEN` (any random string; used during webhook verification)
-- `PAIRING_CODE` (a simple code Suhayl will type once in Rosie Settings)
-- `BRIDGE_SHARED_SECRET` (random 32+ chars)
+## KV backup/restore
+- `GET /api/backup/export?gid=family`
+- `POST /api/backup/import?gid=family` body: `{ "items":[{"key":"...","value":"..."}] }`
 
-Recommended:
-- `META_APP_SECRET` (Meta App Secret; enables X-Hub-Signature-256 verification)
-- `ALLOWED_ORIGINS` (comma-separated GitHub Pages origins, e.g. `https://<user>.github.io`)
-
-4) **Deploy**
-- `npm run deploy`
-
-You’ll get a URL like:
-- `https://rosie-brain.<your-subdomain>.workers.dev`
-
-## WhatsApp Cloud API (Meta) wiring
-In Meta App Dashboard:
-- Add the **WhatsApp** product and connect a phone number.
-- Configure Webhooks:
-  - Callback URL: `https://<your-worker>/webhook`
-  - Verify token: value of `VERIFY_TOKEN`
-  - Subscribe to **messages**
-
-## Rosie app pairing (Suhayl once)
-On Suhayl’s phone:
-- Rosie → Settings → WhatsApp Bridge
-- Enter **Bridge URL** + **Pairing code**
-- Tap **Pair & save token**
-- Export a backup and import it on Nasima’s phone (so she does zero setup)
-
-## Data retention
-Messages and filings are stored in KV until you delete them. If you want automatic retention limits, add a scheduled cleanup later.
+## Delivery status tracking
+- WhatsApp sends `statuses` via webhook. Worker stores status by message id.
+- `GET /api/status/recent?gid=family`

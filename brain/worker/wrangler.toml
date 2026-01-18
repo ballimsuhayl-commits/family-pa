@@ -1,9 +1,17 @@
 name = "rosie-brain"
 main = "worker.js"
 compatibility_date = "2025-01-01"
+workers_dev = true
 
-# Bindings (set in Cloudflare Dashboard or via `wrangler kv namespace create`)
-# KV namespace binding:
-# kv_namespaces = [
-#   { binding = "INBOX_KV", id = "YOUR_KV_NAMESPACE_ID" }
-# ]
+# KV binding required
+kv_namespaces = [
+  { binding = "INBOX_KV", id = "REPLACE_WITH_YOUR_KV_ID" }
+]
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+# Optional R2 for voice proofs
+# [[r2_buckets]]
+# binding = "VOICE_R2"
+# bucket_name = "rosie-voice"
