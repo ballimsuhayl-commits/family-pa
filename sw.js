@@ -1,4 +1,4 @@
-const CACHE = 'rosie-cache-v26';
+const CACHE = 'rosie-cache-v27';
 const ASSETS = [
   './',
   './index.html',
@@ -10,7 +10,8 @@ const ASSETS = [
   './calendar.js',
   './parser.js',
   './ics.js',
-  './manifest.webmanifest'
+  './manifest.webmanifest',
+  './rosie_mascot.svg'
 ];
 
 self.addEventListener('install', (event) => {

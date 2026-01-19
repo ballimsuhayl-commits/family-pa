@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Rosie mascot">
+  <g fill="#FF7043">
+    <path d="M 85 80 C 60 20, 90 10, 100 60 Z" />
+    <path d="M 100 60 C 120 10, 150 20, 125 80 Z" />
+    <path d="M 125 80 C 170 50, 190 80, 140 100 Z" />
+    <path d="M 140 100 C 190 130, 170 170, 120 130 Z" />
+    <path d="M 120 130 C 130 180, 100 190, 100 140 Z" />
+    <path d="M 100 140 C 90 190, 60 180, 70 130 Z" />
+    <path d="M 70 130 C 20 160, 10 120, 60 100 Z" />
+    <path d="M 60 100 C 10 70, 40 40, 85 80 Z" />
+    <circle cx="100" cy="100" r="45" fill="#FF7043"/>
+  </g>
+  <g transform="translate(100, 100)">
+    <g transform="translate(-18, -10) rotate(-10)">
+      <ellipse cx="0" cy="0" rx="9" ry="11" fill="white" />
+      <circle cx="3" cy="-4" r="3.5" fill="black" />
+    </g>
+    <g transform="translate(18, -10) rotate(10)">
+      <ellipse cx="0" cy="0" rx="9" ry="11" fill="white" />
+      <circle cx="3" cy="-4" r="3.5" fill="black" />
+    </g>
+    <path d="M-4,8 Q0,12 4,8" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round" />
+  </g>
+</svg>
