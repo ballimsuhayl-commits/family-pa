@@ -1,17 +1,14 @@
-# Troubleshooting (GitHub Pages)
+# Troubleshooting
 
-## If you see missing icons/avatars after an update
-GitHub Pages + Service Worker caching can keep old files.
+## If icons/avatars don’t show after updating GitHub Pages
+This app uses a Service Worker for offline support. Sometimes browsers keep an old cache.
 
 ### Fix (fast)
-1. Open the site.
-2. Press **Ctrl+Shift+R** (hard refresh).
+- Press **Ctrl+Shift+R** (hard refresh)
 
 ### Fix (guaranteed)
 Chrome:
-1. Open DevTools (F12)
-2. **Application → Service Workers** → click **Unregister**
-3. **Application → Storage** → **Clear site data**
-4. Reload the page
-
-This repo bumps the cache version automatically on deploy, but browsers can still keep an older SW until it refreshes.
+1. F12 → Application
+2. Service Workers → Unregister
+3. Storage → Clear site data
+4. Reload

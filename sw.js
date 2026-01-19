@@ -1,4 +1,4 @@
-const CACHE = 'rosie-cache-ghpages-v35';
+const CACHE = 'rosie-cache-ghpages-v36';
 const ASSETS = [
   './',
   './index.html',
@@ -19,7 +19,7 @@ const ASSETS = [
   './assets/family/jabu.png',
   './assets/family/lisa.png',
   './assets/icons/rosie-192.png',
-  './assets/icons/rosie-512.png',
+  './assets/icons/rosie-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -54,7 +54,6 @@ self.addEventListener('fetch', (event) => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
 
-    // For navigations: network-first with index fallback (SPA safe)
     if (isNavigate && isSameOrigin) {
       try {
         const res = await fetch(event.request);
@@ -65,7 +64,6 @@ self.addEventListener('fetch', (event) => {
       }
     }
 
-    // For other same-origin assets: cache-first, but never trust cached 404/opaque.
     if (isSameOrigin) {
       const cached = await cache.match(event.request);
       if (cached && cached.ok) return cached;
@@ -75,12 +73,10 @@ self.addEventListener('fetch', (event) => {
         if (res && res.ok) cache.put(event.request, res.clone());
         return res;
       } catch {
-        // If offline and we have *any* cached copy, return it even if not ok; else fail.
         return cached || Response.error();
       }
     }
 
-    // Cross-origin: just passthrough
     return fetch(event.request);
   })());
 });

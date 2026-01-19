@@ -105,17 +105,38 @@ function prepFromEvents(state, hours=72){
 }
 
 function header(){
+  const path = location.hash || '#/home';
+  const notHome = path !== '#/home';
+
+  const backBtn = notHome ? el('button',{
+    class:'iconbtn',
+    title:'Back',
+    onClick: ()=>{ try{ if(history.length>1){ history.back(); } else { setHash('#/home'); } }catch{ setHash('#/home'); } },
+    html: icons.chevronLeft(18)
+  }) : el('div',{class:'iconspacer'});
+
+  const homeBtn = el('button',{
+    class:'iconbtn',
+    title:'Home',
+    onClick: ()=> setHash('#/home'),
+    html: icons.rosie(22)
+  });
+
   return el('div',{class:'topbar'},[
+    el('div',{class:'topbarLeft'},[ backBtn, homeBtn ]),
     el('div',{class:'brand'},[
-      el('div',{class:'logo', html: icons.rosie(24)}),
+      el('div',{class:'logo', html: icons.rosie(26)}),
       el('div',{},[
         el('h1',{text:'Rosie'}),
         el('div',{class:'sub', text:'Family Assistant'})
       ])
     ]),
-    el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(18) + '<span>Calendar</span>'})
+    el('div',{class:'topbarRight'},[
+      el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(18) + '<span>Calendar</span>'})
+    ])
   ]);
 }
+
 
 function heroCard(){
   return el('div',{class:'card hero'},[

@@ -1,7 +1,7 @@
 {
   "name": "Rosie \u2013 Family Assistant",
   "short_name": "Rosie",
-  "start_url": "./",
+  "start_url": "./#/home",
   "display": "standalone",
   "background_color": "#FFF9F5",
   "theme_color": "#FFF9F5",

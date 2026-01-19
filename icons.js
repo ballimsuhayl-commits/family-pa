@@ -1,7 +1,7 @@
 const assetUrl = (p) => new URL(p, import.meta.url).toString();
 
 export const icons = {
-  rosie: (size=24)=>`<img src=assetUrl('./assets/rosie.png') width="${size}" height="${size}" alt="Rosie" style="display:block;width:${size}px;height:${size}px;" />`,
+  rosie: (size=24)=>`<img src="${assetUrl('./assets/rosie.png')}" width="${size}" height="${size}" alt="Rosie" loading="eager" decoding="async" style="display:block;width:${size}px;height:${size}px;" />`,
   avatar: (id, size=22)=> {
     const src = ({
       nasima: assetUrl('./assets/family/nasima.png'),
@@ -13,7 +13,8 @@ export const icons = {
       rosie: assetUrl('./assets/rosie.png')
     })[id] || assetUrl('./assets/rosie.png');
     const r = 14;
-    return `<img src="${src}" width="${size}" height="${size}" alt="${id}" style="display:block;width:${size}px;height:${size}px;border-radius:${r}px;" />`;
+    return `<img src="${src}" width="${size}" height="${size}" alt="${id}" loading="lazy" decoding="async"
+      style="display:block;width:${size}px;height:${size}px;border-radius:${r}px;object-fit:contain;background:#fff;" />`;
   },
 
   mic: (size=20)=>`<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">
