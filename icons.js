@@ -1,36 +1,13 @@
 export const icons = {
-  rosie: (size=24)=>`<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
-    <path d="M25,85 Q15,85 15,65 Q15,25 50,25 Q85,25 85,65 Q85,85 75,85 Q50,95 25,85" fill="var(--avatar-rosie)" />
-    <path d="M15,65 Q10,70 15,75" stroke="var(--avatar-rosie)" stroke-width="6" stroke-linecap="round" fill="none"/>
-    <path d="M85,65 Q90,70 85,75" stroke="var(--avatar-rosie)" stroke-width="6" stroke-linecap="round" fill="none"/>
-    <g transform="translate(50, 55)">
-      <circle cx="-10" cy="-5" r="7" fill="white" /><circle cx="-10" cy="-5" r="2.5" fill="#111827" />
-      <circle cx="10" cy="-5" r="7" fill="white" /><circle cx="10" cy="-5" r="2.5" fill="#111827" />
-      <path d="M-12,14 Q0,24 12,14" stroke="#111827" stroke-width="6" stroke-linecap="round" fill="none" />
-    </g>
-    <path d="M50 12 v-10" stroke="var(--avatar-rosie)" stroke-width="6" stroke-linecap="round"></path>
-    <circle cx="50" cy="2" r="4" fill="var(--avatar-rosie)"></circle>
-  </svg>`,
+  rosie: (size=24)=>`<img src="./assets/rosie.png" width="${size}" height="${size}" class="iconimg rosieimg" alt="Rosie" />`,
   avatar: (id, size=22)=>{
-    const c = ({
-      nasima: 'var(--avatar-nasima)',
-      suhayl: 'var(--avatar-suhayl)',
-      rayhaan: 'var(--avatar-rayhaan)',
-      zaara: 'var(--avatar-zaara)',
-      jabu: 'var(--avatar-jabu)',
-      lisa: 'var(--avatar-lisa)',
-      rosie: 'var(--avatar-rosie)'
-    })[id] || 'var(--avatar-rosie)';
-    return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
-      <path d="M25,85 Q15,85 15,65 Q15,25 50,20 Q85,25 85,65 Q85,85 75,85 Q50,95 25,85" fill="${c}" />
-      <path d="M15,65 Q10,70 15,75" stroke="${c}" stroke-width="6" stroke-linecap="round" fill="none"/>
-      <path d="M85,65 Q90,70 85,75" stroke="${c}" stroke-width="6" stroke-linecap="round" fill="none"/>
-      <g transform="translate(50, 55)">
-        <circle cx="-10" cy="-5" r="7" fill="white" /><circle cx="-10" cy="-5" r="2.5" fill="#111827" />
-        <circle cx="10" cy="-5" r="7" fill="white" /><circle cx="10" cy="-5" r="2.5" fill="#111827" />
-        <path d="M-10,14 Q0,20 10,14" stroke="#111827" stroke-width="6" stroke-linecap="round" fill="none" />
-      </g>
-    </svg>`;
+    const allowed = new Set(['nasima','suhayl','zaara','rayhaan','jabu','lisa']);
+    if(allowed.has(id)){
+      const alt = id.charAt(0).toUpperCase()+id.slice(1);
+      return `<img src="./assets/family/${id}.png" width="${size}" height="${size}" class="iconimg avatarimg" alt="${alt} avatar" />`;
+    }
+    // fallback: Rosie
+    return `<img src="./assets/rosie.png" width="${size}" height="${size}" class="iconimg avatarimg" alt="Avatar" />`;
   },
   mic: (size=20)=>`<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">
     <path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/>
