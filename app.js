@@ -372,7 +372,6 @@ function renderLists(state, render){
   ]);
 }
 
-}
 
 function renderHome(state, render){
   return el('div',{class:'shell'},[
