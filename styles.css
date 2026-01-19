@@ -1,6 +1,14 @@
 :root{
-  --bg1:#fff3fb;
-  --bg2:#eef7ff;
+  --avatar-nasima:#FFAB91;
+  --avatar-suhayl:#64B5F6;
+  --avatar-rayhaan:#EF5350;
+  --avatar-zaara:#BA68C8;
+  --avatar-jabu:#FDD835;
+  --avatar-lisa:#8D6E63;
+  --avatar-rosie:#FF7043;
+
+  --bg1:#f6f7fb;
+  --bg2:#f6f7fb;
   --card: rgba(255,255,255,.86);
   --ink:#111827;
   --muted:#6b7280;
@@ -231,8 +239,16 @@ hr.sep{border:none; border-top:1px solid rgba(17,24,39,.08); margin:10px 0}
 
 @media (prefers-color-scheme: dark){
   :root{
-    --bg1:#0b1020;
-    --bg2:#0b1226;
+  --avatar-nasima:#FFAB91;
+  --avatar-suhayl:#64B5F6;
+  --avatar-rayhaan:#EF5350;
+  --avatar-zaara:#BA68C8;
+  --avatar-jabu:#FDD835;
+  --avatar-lisa:#8D6E63;
+  --avatar-rosie:#FF7043;
+
+    --bg1:#f6f7fb;
+    --bg2:#f6f7fb;
     --card: rgba(20,24,36,.72);
     --ink:#e5e7eb;
     --muted:#a1a1aa;
@@ -302,59 +318,66 @@ hr.sep{border:none; border-top:1px solid rgba(17,24,39,.08); margin:10px 0}
 }
 
 
-/* Segmented control (Lists tabs) */
-.segmented{
-  display:flex;
-  gap:8px;
-  background: rgba(0,0,0,0.04);
-  border:1px solid rgba(0,0,0,0.08);
-  border-radius:14px;
-  padding:6px;
-  margin-top:10px;
-}
-.segbtn{
-  flex:1;
-  border:0;
-  background:transparent;
-  padding:10px 12px;
-  border-radius:12px;
-  font-weight:600;
-}
-.segbtn.active{
-  background:#fff;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-}
+/* Minimal calm polish (safe CSS-only) */
+body{ background: var(--bg1); }
 
-/* Full-width buttons inside sheets */
-.pill.full{
-  width:100%;
-  justify-content:flex-start;
-  gap:10px;
-  padding:12px 14px;
-  margin:6px 0;
-}
-
-
-/* Bottom sheet overlays */
-.sheet{
-  position: fixed;
-  inset: 0;
-  background: rgba(17,24,39,.35);
-  display: none;
+.topbar{
+  position: sticky;
+  top: 0;
   z-index: 50;
-  padding: 14px;
-  align-items: flex-end;
+  backdrop-filter: blur(10px);
+  background: rgba(246,247,251,.88);
+  border-bottom: 1px solid rgba(17,24,39,.06);
 }
-.sheet.open{ display:flex; }
-.sheet .panel{
-  width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
-  background: rgba(255,255,255,.96);
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-  padding: 14px;
-  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+
+.card, .section, .modal .box{
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(17,24,39,.06);
+  box-shadow: 0 6px 20px rgba(17,24,39,.06);
 }
-.sheet .panel strong{font-size:16px}
+
+.pill{
+  border: 1px solid rgba(17,24,39,.10);
+  background: rgba(255,255,255,.92);
+}
+
+.pill.primary{
+  background: #111827;
+  border-color: #111827;
+}
+
+.quick{
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  padding-top: 10px;
+  background: linear-gradient(to bottom, rgba(246,247,251,.96), rgba(246,247,251,0));
+}
+
+.memberChips{
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.memberChip{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 999px;
+  background: rgba(17,24,39,.04);
+  border: 1px solid rgba(17,24,39,.08);
+  font-weight: 600;
+}
+
+.memberChip svg{ display:block; filter: drop-shadow(0 2px 4px rgba(17,24,39,.10)); }
+.memberChip .name{ font-size: .9rem; }
+
+.tag .memberChips{ margin-left: 8px; }
+
+.logo svg, .rosie svg{
+  filter: drop-shadow(0 4px 10px rgba(17,24,39,.10));
+}
+

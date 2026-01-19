@@ -24,6 +24,20 @@ function el(tag, attrs={}, children=[]){
   return node;
 }
 
+function memberChips(state, ids, size=16){
+  const wrap = el('span',{class:'memberChips'});
+  const list = (ids||[]).filter(Boolean);
+  for(const id of list){
+    const m = getMember(state, id);
+    if(!m) continue;
+    wrap.appendChild(el('span',{class:'memberChip'},[
+      el('span',{class:'avatar', html: icons.avatar(id, size)}),
+      el('span',{class:'name', text: m.name})
+    ]));
+  }
+  return wrap;
+}
+
 function toast(msg){
   const t = document.getElementById('toast');
   if(!t) return;
@@ -99,7 +113,7 @@ function header(){
         el('div',{class:'sub', text:'Family Assistant'})
       ])
     ]),
-    el('button',{class:'pill small', onClick: ()=> setHash('#/settings'), html: icons.gear(18) + '<span>More</span>'})
+    el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(18) + '<span>Calendar</span>'})
   ]);
 }
 
@@ -251,8 +265,6 @@ function inboxPeek(state){
     ])
   ]);
   return el('div',{class:'section'},[ box ]);
-}
-
 function listsPeek(state){
   const openTasks = (state.tasks||[]).filter(t=>!t.done).length;
   const openG = (state.groceries||[]).filter(g=>!g.done).length;
@@ -273,8 +285,6 @@ function listsPeek(state){
 function renderLists(state, render){
   const tasks = (state.tasks||[]).filter(t=>!t.done);
   const groceries = (state.groceries||[]).filter(g=>!g.done);
-  const hash = location.hash || '#/lists';
-  const activeTab = hash.includes('groceries') ? 'groceries' : 'tasks';
 
   const taskInput = el('input',{placeholder:'e.g. “Tell Jabu clean kitchen tomorrow”'});
   const addTask = el('button',{class:'pill primary', html: icons.plus(18)+'<span>Add</span>', onClick: ()=>{
@@ -306,7 +316,10 @@ function renderLists(state, render){
     return el('div',{class:'item'},[
       el('div',{class:'grow'},[
         el('h3',{text: t.title}),
-        el('p',{text: `${who || 'Unassigned'}${dueTxt}`}),
+        el('p',{},[
+          (t.assignees||[]).length ? memberChips(state, t.assignees, 16) : el('span',{class:'smallmuted', text:'Unassigned'}),
+          dueTxt ? el('span',{class:'smallmuted', text: dueTxt.replace(/^\s*·\s*/,' · ')}) : null
+        ]),
         el('div',{class:'row', style:'gap:8px; flex-wrap:wrap;'},[
           el('span',{class:'tag', text:'From: ' + (t.source||'app')})
         ]),
@@ -336,39 +349,28 @@ function renderLists(state, render){
     ]);
   }) : [el('div',{class:'item'},[el('div',{class:'grow'},[el('h3',{text:'Grocery list is empty'}), el('p',{text:'Add items as you think of them.'})])])];
 
-  const tabs = el('div',{class:'segmented'},[
-    el('button',{class:'segbtn'+(activeTab==='tasks'?' active':''), onClick: ()=> setHash('#/lists')},['Tasks']),
-    el('button',{class:'segbtn'+(activeTab==='groceries'?' active':''), onClick: ()=> setHash('#/lists/groceries')},['Groceries'])
-  ]);
-
-  const tasksSection = el('div',{class:'section'},[
-    el('h2',{text:'Tasks'}),
-    el('div',{class:'quick'},[
-      el('div',{class:'input'},[ el('span',{html: icons.plus(18)}), taskInput ]),
-      addTask
-    ]),
-    el('div',{class:'card list'}, taskList)
-  ]);
-
-  const groceriesSection = el('div',{class:'section'},[
-    el('h2',{text:'Groceries'}),
-    el('div',{class:'quick'},[
-      el('div',{class:'input'},[ el('span',{html: icons.plus(18)}), grocInput ]),
-      addG
-    ]),
-    el('div',{class:'card list'}, grocList)
-  ]);
-
   return el('div',{class:'shell'},[
     header(),
     el('div',{class:'section'},[
-      el('h2',{text:'Lists'}),
-      tabs
+      el('h2',{text:'Tasks'}),
+      el('div',{class:'quick'},[
+        el('div',{class:'input'},[ el('span',{html: icons.list(18)}), taskInput ]),
+        addTask
+      ]),
+      el('div',{class:'card list'}, taskList)
     ]),
-    activeTab==='tasks' ? tasksSection : groceriesSection
+    el('div',{class:'section'},[
+      el('h2',{text:'Groceries'}),
+      el('div',{class:'quick'},[
+        el('div',{class:'input'},[ el('span',{html: icons.plus(18)}), grocInput ]),
+        addG
+      ]),
+      el('div',{class:'card list'}, grocList)
+    ])
   ]);
 }
 
+}
 
 function renderHome(state, render){
   return el('div',{class:'shell'},[
@@ -436,7 +438,11 @@ function renderUrgent(state, render){
     return el('div',{class:'item'},[
       el('div',{class:'grow'},[
         el('h3',{text: x.task.title}),
-        el('p',{text: `${when} · ${x.ev.title}${x.ev.where ? ' · '+x.ev.where : ''}${who ? ' · '+who : ''}`})
+        el('p',{},[
+          el('span',{text: `${when} · ${x.ev.title}${x.ev.where ? ' · '+x.ev.where : ''}`}),
+          (x.ev.who||[]).length ? el('span',{text:' · '}) : null,
+          (x.ev.who||[]).length ? memberChips(state, x.ev.who, 16) : null
+        ])
       ])
     ]);
   });
@@ -502,7 +508,9 @@ function dayModal(state, day, render){
         el('div',{class:'grow'},[
           el('h3',{text: ev.title}),
           el('p',{text: `${ev.allDay ? 'All day' : hm(ev.start)}${ev.end && !ev.allDay ? '–'+hm(ev.end) : ''}${ev.where ? ' · '+ev.where : ''}`}),
-          el('div',{class:'tag', text: memberLabel(state, ev.who) || (ev.type||'Other')})
+          el('div',{class:'tag'},[
+            (ev.who||[]).length ? memberChips(state, ev.who, 16) : el('span',{text: (ev.type||'Other')})
+          ])
         ]),
         el('div',{class:'actions'},[
           el('button',{class:'pill small danger', html: icons.x(18), onClick: ()=>{
@@ -526,7 +534,10 @@ function dayModal(state, day, render){
   if(clashes.length){
     clashBox.appendChild(el('div',{class:'badge danger', html:`${icons.list(16)}<span>Clashes detected</span>`}));
     for(const {m,c} of clashes){
-      clashBox.appendChild(el('div',{class:'smallmuted', text:`${m.name}: ${c.length} overlap(s)`}));
+      clashBox.appendChild(el('div',{class:'smallmuted'},[
+        el('span',{html: icons.avatar(m.id, 16)}),
+        el('span',{text:` ${m.name}: ${c.length} overlap(s)`})
+      ]));
     }
   }
 
@@ -680,7 +691,11 @@ function openIcsImport(state, render){
         el('div',{class:'grow'},[
           el('h3',{text: ev.title}),
           el('p',{text: `${new Date(ev.start).toLocaleString()}${ev.where ? ' · '+ev.where : ''}`}),
-          el('div',{class:'tag', text: `${ev.type||'Other'}${(ev.who||[]).length ? ' · ' + memberLabel(state, ev.who) : ''}`})
+          el('div',{class:'tag'},[
+            el('span',{text: (ev.type||'Other')}),
+            (ev.who||[]).length ? el('span',{text:' · '}) : null,
+            (ev.who||[]).length ? memberChips(state, ev.who, 16) : null
+          ])
         ])
       ]));
     }
@@ -1096,7 +1111,8 @@ function nav(){
       mk('#/home','Home', (s)=>icons.rosie(s)),
       mk('#/calendar','Calendar', (s)=>icons.calendar(s)),
       mk('#/inbox','Inbox', (s)=>icons.list(s)),
-      mk('#/lists','Lists', (s)=>icons.list(s))])
+      mk('#/settings','Settings', (s)=>icons.gear(s))
+    ])
   ]);
 }
 
@@ -1208,56 +1224,10 @@ function ensureOverlays(state, render){
     `}));
   }
 
-
-  if(!document.getElementById('addsheet')){
-    const addsheet = el('div',{id:'addsheet', class:'sheet', html: `
-      <div class="panel">
-        <div class="row" style="justify-content:space-between; align-items:center;">
-          <strong>Add</strong>
-          <button id="addClose" class="pill small">${icons.x(18)} Close</button>
-        </div>
-        <div class="list" style="margin-top:10px;">
-          <button id="addTaskBtn" class="pill full">${icons.plus(18)} Task</button>
-          <button id="addEventBtn" class="pill full">${icons.calendar(18)} Event</button>
-          <button id="addGrocBtn" class="pill full">${icons.plus(18)} Grocery</button>
-          <button id="addPasteBtn" class="pill full">${icons.list(18)} Paste / Message</button>
-          <button id="addVoiceBtn" class="pill full">${icons.mic(18)} Voice</button>
-        </div>
-      </div>
-    `});
-    addsheet.addEventListener('click', (e)=>{ if(e.target===addsheet) addsheet.classList.remove('open'); });
-    document.body.appendChild(addsheet);
-  }
-
   if(!document.getElementById('fab')){
-    const fab = el('button',{id:'fab', class:'fab', html: icons.plus(24), onClick: ()=> openAddSheet(state, render) });
+    const fab = el('button',{id:'fab', class:'fab', html: icons.mic(22), onClick: ()=> openVoiceSheet(state, render) });
     document.body.appendChild(fab);
   }
-}
-
-
-function openAddSheet(state, render){
-  const s = document.getElementById('addsheet');
-  if(!s) return;
-  s.classList.add('open');
-
-  const close = document.getElementById('addClose');
-  if(close) close.onclick = ()=> s.classList.remove('open');
-
-  const taskBtn = document.getElementById('addTaskBtn');
-  if(taskBtn) taskBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/lists'); setTimeout(()=>{ const i=document.querySelector('#app input[placeholder^="e.g. “Tell"]'); if(i) i.focus(); }, 50); };
-
-  const grocBtn = document.getElementById('addGrocBtn');
-  if(grocBtn) grocBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/lists/groceries'); setTimeout(()=>{ const i=document.querySelector('#app input[placeholder^="e.g. “Milk"]'); if(i) i.focus(); }, 50); };
-
-  const eventBtn = document.getElementById('addEventBtn');
-  if(eventBtn) eventBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/calendar'); toast('Tap + Add on Calendar'); };
-
-  const pasteBtn = document.getElementById('addPasteBtn');
-  if(pasteBtn) pasteBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/home'); setTimeout(()=>{ const ta=document.getElementById('capture'); if(ta) ta.focus(); }, 50); };
-
-  const voiceBtn = document.getElementById('addVoiceBtn');
-  if(voiceBtn) voiceBtn.onclick = ()=>{ s.classList.remove('open'); openVoiceSheet(state, render); };
 }
 
 function openVoiceSheet(state, render){
