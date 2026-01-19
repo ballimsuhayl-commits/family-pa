@@ -1,33 +1,15 @@
 :root{
-  /* HappyBot / Gemini-inspired playful palette */
-  --bg-orange:#FF5722;
-  --bg-green:#4CAF50;
-
-  --glass-bg: rgba(255,255,255,.86);
-  --text-main:#2D3436;
-
-  /* Character colors (used for accents) */
-  --color-rosie:#FF7043;
-  --color-nasima:#FFAB91;
-  --color-suhayl:#64B5F6;
-  --color-rayhaan:#EF5350;
-  --color-zaara:#BA68C8;
-  --color-jabu:#FDD835;
-  --color-lisa:#8D6E63;
-
-  /* Existing app tokens (mapped to playful palette) */
-  --bg1: var(--bg-orange);
-  --bg2: var(--bg-green);
-  --card: var(--glass-bg);
-  --ink: var(--text-main);
-  --muted:#546E7A;
-  --brand:#FF5722;
-  --ok:#66BB6A;
-  --warn:#FFCA28;
-  --bad:#EF5350;
-
-  --shadow: 0 10px 35px rgba(0,0,0,.15);
-  --radius: 22px;
+  --bg1:#fff3fb;
+  --bg2:#eef7ff;
+  --card: rgba(255,255,255,.86);
+  --ink:#111827;
+  --muted:#6b7280;
+  --brand:#7c3aed;
+  --ok:#16a34a;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --shadow: 0 8px 30px rgba(17,24,39,.10);
+  --radius: 18px;
   --tap: 48px;
 }
 
@@ -319,93 +301,60 @@ hr.sep{border:none; border-top:1px solid rgba(17,24,39,.08); margin:10px 0}
   border: 1px solid rgba(124,58,237,.25);
 }
 
-/* -------------------------------
-   HAPPYBOT "TOONIFY" THEME LAYER
-   CSS-only: no layout/JS changes.
----------------------------------*/
 
-body{
-  background: linear-gradient(to right, var(--bg-orange) 50%, var(--bg-green) 50%);
-  color: var(--ink);
+/* Segmented control (Lists tabs) */
+.segmented{
+  display:flex;
+  gap:8px;
+  background: rgba(0,0,0,0.04);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:14px;
+  padding:6px;
+  margin-top:10px;
 }
-
-/* Give the whole app a glass-card feel against the bold split background */
-.app, .card, .panel{
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255,255,255,.35);
+.segbtn{
+  flex:1;
+  border:0;
+  background:transparent;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:600;
 }
-
-/* Header brand: playful but still readable */
-.brand h1{
-  font-family: 'Comic Sans MS','Chalkboard SE', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 900;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--color-rosie);
+.segbtn.active{
+  background:#fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
 }
 
-/* Buttons / pills: friendly rounded */
-.btn, .pill, .iconbtn{
-  border-radius: 999px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.08);
-}
-.btn.primary, .pill.primary{
-  background: linear-gradient(135deg, rgba(255,87,34,.96), rgba(255,112,67,.92));
-  border: none;
-}
-.badge{
-  background: rgba(255,255,255,.70);
+/* Full-width buttons inside sheets */
+.pill.full{
+  width:100%;
+  justify-content:flex-start;
+  gap:10px;
+  padding:12px 14px;
+  margin:6px 0;
 }
 
-/* Bottom nav: rounded, "Gemini-style" tray */
-.bottom{
-  background: #fff;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-  box-shadow: 0 -10px 40px rgba(0,0,0,.12);
-  border-top: 1px solid rgba(0,0,0,.04);
-}
 
-/* Active nav feels cheerful */
-.navbtn.active{
-  color: var(--bg-orange);
-}
-.navbtn:active{
-  transform: translateY(-2px);
-}
-
-/* FAB: gentle bounce, fun */
-.fab{
-  background: var(--color-rosie);
-  color: #fff;
-  border: 4px solid #fff;
-  box-shadow: 0 10px 20px rgba(255,112,67,.40);
-  animation: happyBounce 3s ease-in-out infinite;
-}
-.fab:active{
-  transform: scale(.94);
-}
-
-/* Rosie mascot sticker (non-interactive, decorative) */
-body::before{
-  content:"";
+/* Bottom sheet overlays */
+.sheet{
   position: fixed;
-  right: 14px;
-  bottom: 96px;
-  width: 78px;
-  height: 78px;
-  background: url('./rosie_mascot.svg') no-repeat center / contain;
-  filter: drop-shadow(0 8px 10px rgba(0,0,0,.20));
-  opacity: .98;
-  pointer-events: none;
-  animation: happyBounce 3s ease-in-out infinite;
+  inset: 0;
+  background: rgba(17,24,39,.35);
+  display: none;
+  z-index: 50;
+  padding: 14px;
+  align-items: flex-end;
 }
-
-/* Motion from the Gemini reference */
-@keyframes happyBounce{
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-8px) rotate(3deg); }
+.sheet.open{ display:flex; }
+.sheet .panel{
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
 }
+.sheet .panel strong{font-size:16px}
