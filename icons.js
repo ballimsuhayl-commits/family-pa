@@ -5,7 +5,7 @@ function assetUrl(path){
 
 export const icons = {
   rosie: (size=24)=>`<img src="${assetUrl('./assets/rosie.png')}" width="${size}" height="${size}" alt="Rosie" decoding="async" style="display:block;width:${size}px;height:${size}px;object-fit:contain;" />`,
-  avatar: (id, size=28)=> {
+  avatar: (id, size=22)=> {
     const src = (id && id !== 'rosie') ? assetUrl(`./assets/family/${id}.png`) : assetUrl('./assets/rosie.png');
     const r = 14;
     return `<img src="${src}" width="${size}" height="${size}" alt="${id||'avatar'}" decoding="async"
@@ -35,3 +35,5 @@ search: (size=20)=>`<svg width="${size}" height="${size}" viewBox="0 0 24 24" ar
   <path d="M21 21l-4.3-4.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
 </svg>`,
 };
+
+/* __REV__ */

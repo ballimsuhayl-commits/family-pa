@@ -1,6 +1,6 @@
 # Rosie — Family Assistant
 
-Revision: r42
+Revision: __REV__
 
 # Rosie – Family Assistant (ITER22 UI/UX)
 
@@ -42,6 +42,11 @@ If you ever see a blank screen after an update, it is usually a cached Service W
 - GitHub Pages workflow verifies assets exist and stamps revisions as `r42-<sha>`.
 
 
-## Documentation
-- This repository uses this root README as the primary entry point.
-- Worker docs (if present) live under `brain/worker/WORKER.md`.
+## GitHub Pages
+Recommended: Settings → Pages → Build and deployment: **GitHub Actions**.
+
+If you prefer “Deploy from branch”, choose:
+- Branch: main
+- Folder: /docs
+
+This repo includes both root and /docs so either method works.

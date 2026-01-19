@@ -133,13 +133,13 @@ function header(){
     class:'iconbtn',
     title:'Home',
     onClick: ()=> setHash('#/home'),
-    html: icons.rosie(30)
+    html: icons.rosie(36)
   });
 
   return el('div',{class:'topbar'},[
     el('div',{class:'topbarLeft'},[ backBtn, homeBtn ]),
     el('div',{class:'brand'},[
-      el('div',{class:'logo', html: icons.rosie(40)}),
+      el('div',{class:'logo', html: icons.rosie(44)}),
       el('div',{},[
         el('h1',{text:'Rosie'}),
         el('div',{class:'sub', text:'Family Assistant'})
@@ -147,7 +147,7 @@ function header(){
     ]),
     el('div',{class:'topbarRight'},[
       el('div',{class:'rev', text: (window.__ROSIE_REV__||'__REV__') }),
-      el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(18) + '<span>Calendar</span>'})
+      el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(20) + '<span>Calendar</span>'})
     ])
   ]);
 }
@@ -155,7 +155,7 @@ function header(){
 
 function heroCard(){
   return el('div',{class:'card hero'},[
-    el('div',{class:'rosie', html: icons.rosie(84)}),
+    el('div',{class:'rosie', html: icons.rosie(30)}),
     el('div',{class:'msg'},[
       el('p',{class:'title', text:'Tell me what’s going on — I’ll sort it.'}),
       el('p',{class:'hint', text:'Speak or type one message. Rosie files it into calendar, tasks, or groceries.'})
@@ -268,7 +268,7 @@ function next14DaysList(state){
         evs.length>4 ? el('div',{class:'tag', text:`+${evs.length-4} more`}) : null
       ]),
       el('div',{class:'actions'},[
-        el('button',{class:'pill small', html: icons.calendar(18), onClick: ()=> { state.ui.calAnchor = day.toISOString(); setHash('#/calendar'); }})
+        el('button',{class:'pill small', html: icons.calendar(20), onClick: ()=> { state.ui.calAnchor = day.toISOString(); setHash('#/calendar'); }})
       ])
     ]));
   }
@@ -432,7 +432,7 @@ function renderUrgent(state, render){
       el('p',{text:`${x.day.toLocaleDateString(undefined,{weekday:'short', month:'short', day:'numeric'})} · ${x.count} overlap(s)`})
     ]),
     el('div',{class:'actions'},[
-      el('button',{class:'pill small', html: icons.calendar(18), onClick: ()=> { state.ui.calAnchor = x.day.toISOString(); setHash('#/calendar'); }})
+      el('button',{class:'pill small', html: icons.calendar(20), onClick: ()=> { state.ui.calAnchor = x.day.toISOString(); setHash('#/calendar'); }})
     ])
   ]));
   if(clashList.length===0){
@@ -572,7 +572,7 @@ function dayModal(state, day, render){
     clashBox.appendChild(el('div',{class:'badge danger', html:`${icons.list(16)}<span>Clashes detected</span>`}));
     for(const {m,c} of clashes){
       clashBox.appendChild(el('div',{class:'smallmuted'},[
-        el('span',{html: icons.avatar(m.id, 24)}),
+        el('span',{html: icons.avatar(m.id, 16)}),
         el('span',{text:` ${m.name}: ${c.length} overlap(s)`})
       ]));
     }

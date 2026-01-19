@@ -1,5 +1,5 @@
 const __RAW_REV__ = '__REV__';
-window.__ROSIE_REV__ = (__RAW_REV__.includes('__REV__') ? 'r42-local' : __RAW_REV__);
+window.__ROSIE_REV__ = (__RAW_REV__.includes('__REV__') ? 'r43-local' : __RAW_REV__);
 import { startApp } from './app.js';
 
 const root = document.getElementById('app');

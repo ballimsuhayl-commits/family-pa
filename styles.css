@@ -92,10 +92,9 @@ body{
   align-items:flex-start;
 }
 .rosie{
-  width:112px; height:112px; border-radius:38px;
-  background: rgba(244,140,37,.10);
-  border: var(--outline);
-  box-shadow: var(--shadow);
+  width:64px; height:64px; border-radius:22px;
+  background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(236,72,153,.15));
+  border:1px solid rgba(124,58,237,.20);
   display:grid; place-items:center;
   flex:0 0 auto;
 }
@@ -502,12 +501,7 @@ textarea{ border-radius: 24px !important; padding: 12px !important; }
   border-radius: 14px;
 }
 
-.logo img, .rosie img{
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
-}
-
-.brand .logo{
-  width:46px; height:46px; display:grid; place-items:center;
-  border-radius:18px;
-}
-.brand .logo img{ width:40px; height:40px; }
+/* Mascot Scale Overrides — __REV__ */
+.logo img{ width: 44px !important; height: 44px !important; }
+.heroMascot img{ width: 84px !important; height: 84px !important; }
+.avatarChip img{ width: 28px !important; height: 28px !important; }
