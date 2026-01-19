@@ -1,3 +1,18 @@
+
+async function resetAppCache(){
+  try{
+    if ('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const r of regs) { try { await r.unregister(); } catch(e){} }
+    }
+    if (window.caches){
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+  }catch(e){}
+  location.reload();
+}
+
 import { icons } from './icons.js';
 import { loadState, saveState, uid, nowIso, removeById, getMember, memberLabel } from './store.js';
 import { ymd, hm, startOfDay, addDays, monthMatrix, twoWeekMatrix, eventsForDay, detectClashes, formatEventLine } from './calendar.js';
@@ -132,6 +147,7 @@ function header(){
       ])
     ]),
     el('div',{class:'topbarRight'},[
+      el('div',{class:'rev', text:(window.__ROSIE_REV__||'r41')}),
       el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(18) + '<span>Calendar</span>'})
     ])
   ]);
@@ -1109,6 +1125,8 @@ function renderSettings(state, render){
     ]),
     el('div',{class:'section'},[
       el('h2',{text:'Backup'}),
+      el('div',{class:'muted', text:'If icons ever disappear after an update, use Reset Cache.'}),
+      el('button',{class:'btn', onClick: resetAppCache, text:'Reset cache & reload'}),
       el('div',{class:'card list'},[
         el('div',{class:'item'},[ el('div',{class:'actions'},[exportBtn]) ]),
         el('div',{class:'item'},[

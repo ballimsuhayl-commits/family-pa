@@ -1,3 +1,4 @@
+window.__ROSIE_REV__ = 'r41';
 import { startApp } from './app.js';
 
 const root = document.getElementById('app');
@@ -5,7 +6,7 @@ startApp(root);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').then((reg) => {
+    navigator.serviceWorker.register('./sw.js?rev=r41').then((reg) => {
   // If there's an updated SW waiting, activate it immediately.
   if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
   reg.addEventListener('updatefound', () => {
