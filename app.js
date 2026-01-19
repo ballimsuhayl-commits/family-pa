@@ -265,6 +265,8 @@ function inboxPeek(state){
     ])
   ]);
   return el('div',{class:'section'},[ box ]);
+}
+
 function listsPeek(state){
   const openTasks = (state.tasks||[]).filter(t=>!t.done).length;
   const openG = (state.groceries||[]).filter(g=>!g.done).length;
