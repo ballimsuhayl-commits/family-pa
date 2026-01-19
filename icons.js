@@ -1,14 +1,21 @@
+const assetUrl = (p) => new URL(p, import.meta.url).toString();
+
 export const icons = {
-  rosie: (size=24)=>`<img src="./assets/rosie.png" width="${size}" height="${size}" class="iconimg rosieimg" alt="Rosie" />`,
-  avatar: (id, size=22)=>{
-    const allowed = new Set(['nasima','suhayl','zaara','rayhaan','jabu','lisa']);
-    if(allowed.has(id)){
-      const alt = id.charAt(0).toUpperCase()+id.slice(1);
-      return `<img src="./assets/family/${id}.png" width="${size}" height="${size}" class="iconimg avatarimg" alt="${alt} avatar" />`;
-    }
-    // fallback: Rosie
-    return `<img src="./assets/rosie.png" width="${size}" height="${size}" class="iconimg avatarimg" alt="Avatar" />`;
+  rosie: (size=24)=>`<img src=assetUrl('./assets/rosie.png') width="${size}" height="${size}" alt="Rosie" style="display:block;width:${size}px;height:${size}px;" />`,
+  avatar: (id, size=22)=> {
+    const src = ({
+      nasima: assetUrl('./assets/family/nasima.png'),
+      suhayl: assetUrl('./assets/family/suhayl.png'),
+      zaara: assetUrl('./assets/family/zaara.png'),
+      rayhaan: assetUrl('./assets/family/rayhaan.png'),
+      jabu: assetUrl('./assets/family/jabu.png'),
+      lisa: assetUrl('./assets/family/lisa.png'),
+      rosie: assetUrl('./assets/rosie.png')
+    })[id] || assetUrl('./assets/rosie.png');
+    const r = 14;
+    return `<img src="${src}" width="${size}" height="${size}" alt="${id}" style="display:block;width:${size}px;height:${size}px;border-radius:${r}px;" />`;
   },
+
   mic: (size=20)=>`<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">
     <path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/>
   </svg>`,

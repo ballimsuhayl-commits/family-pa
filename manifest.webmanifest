@@ -1,22 +1,20 @@
 {
   "name": "Rosie \u2013 Family Assistant",
   "short_name": "Rosie",
-  "start_url": "./#/home",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#FFF9F5",
-  "theme_color": "#f48c25",
+  "theme_color": "#FFF9F5",
   "icons": [
     {
       "src": "./assets/icons/rosie-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "./assets/icons/rosie-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }

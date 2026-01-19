@@ -1,4 +1,4 @@
-const CACHE = 'rosie-cache-v34';
+const CACHE = 'rosie-cache-ghpages-v35';
 const ASSETS = [
   './',
   './index.html',
@@ -19,23 +19,23 @@ const ASSETS = [
   './assets/family/jabu.png',
   './assets/family/lisa.png',
   './assets/icons/rosie-192.png',
-  './assets/icons/rosie-512.png'
+  './assets/icons/rosie-512.png',
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await cache.addAll(ASSETS);
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.map((k) => (k === CACHE ? null : caches.delete(k)))))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('message', (event) => {
@@ -47,15 +47,40 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetchAndCache = fetch(event.request).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, copy)).catch(() => {});
+  const url = new URL(event.request.url);
+  const isSameOrigin = url.origin === self.location.origin;
+  const isNavigate = event.request.mode === 'navigate';
+
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+
+    // For navigations: network-first with index fallback (SPA safe)
+    if (isNavigate && isSameOrigin) {
+      try {
+        const res = await fetch(event.request);
+        if (res && res.ok) cache.put(event.request, res.clone());
         return res;
-      });
-      // Cache-first for same-origin navigations/assets; fallback to network; finally to index.html.
-      return cached || fetchAndCache.catch(() => caches.match('./index.html'));
-    })
-  );
+      } catch {
+        return (await cache.match('./index.html')) || Response.error();
+      }
+    }
+
+    // For other same-origin assets: cache-first, but never trust cached 404/opaque.
+    if (isSameOrigin) {
+      const cached = await cache.match(event.request);
+      if (cached && cached.ok) return cached;
+
+      try {
+        const res = await fetch(event.request);
+        if (res && res.ok) cache.put(event.request, res.clone());
+        return res;
+      } catch {
+        // If offline and we have *any* cached copy, return it even if not ok; else fail.
+        return cached || Response.error();
+      }
+    }
+
+    // Cross-origin: just passthrough
+    return fetch(event.request);
+  })());
 });

@@ -383,134 +383,85 @@ body{ background: var(--bg1); }
 
 
 
-/* ===========================
-   Blob-Toon Theme Override
-   (v34 - aesthetics only)
-   =========================== */
 
+/* --- Blob-Toon global skin (GitHub Pages-ready) --- */
 :root{
   --bg1:#FFF9F5;
   --bg2:#FFF9F5;
   --card:#FFFFFF;
   --ink:#1A1A1A;
-  --muted:#4b5563;
-  --brand:#f48c25;
-  --accent:#FFD93D;
-  --outline:#1A1A1A;
-  --shadow-toon: 6px 6px 0 0 var(--outline);
-  --shadow-toon-sm: 4px 4px 0 0 var(--outline);
-  --shadow-pressed: 2px 2px 0 0 var(--outline);
-  --radius: 32px;
-  --radius-sm: 20px;
+  --muted:#5f6368;
+
+  --outline: 3px solid #1A1A1A;
+  --sticker-shadow: 6px 6px 0px 0px rgba(26,26,26,1);
+  --sticker-shadow-hover: 2px 2px 0px 0px rgba(26,26,26,1);
+
+  --radius: 28px;
+  --radius-sm: 18px;
+  --tap: 48px;
 }
 
-html,body{background:var(--bg1);}
 body{
-  font-family: "Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  color:var(--ink);
+  background: var(--bg1);
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
 }
 
-h1,h2,h3,.h1,.h2{
-  font-family: "Fredoka", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  letter-spacing: .2px;
+h1,h2,h3,.h1,.h2,.h3{
+  font-family: "Fredoka","Plus Jakarta Sans", ui-sans-serif, system-ui;
+  letter-spacing:-0.02em;
 }
-
-a, .brand{ color: var(--brand); }
 
 .card{
-  background: var(--card);
-  border: 3px solid var(--outline);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-toon);
+  background: var(--card) !important;
+  border: var(--outline) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--sticker-shadow) !important;
 }
 
-.card:active{
-  transform: translate(4px,4px);
-  box-shadow: var(--shadow-pressed);
-}
-
-.btn, button, .navbtn, .iconbtn{
-  border-radius: 999px;
-}
-
-.btn{
-  border: 3px solid var(--outline);
-  box-shadow: var(--shadow-toon-sm);
-  font-weight: 800;
-}
-
-.btn.primary{
-  background: var(--brand);
-  color: #fff;
-}
-
-.btn:active{
-  transform: translate(3px,3px);
-  box-shadow: var(--shadow-pressed);
-}
-
-.input, input, textarea, select{
-  border: 3px solid var(--outline) !important;
+.btn, .iconbtn, .tab, .segbtn, .chip, .memberChip, .navbtn{
+  border: var(--outline) !important;
+  box-shadow: var(--sticker-shadow) !important;
   border-radius: 999px !important;
-  box-shadow: var(--shadow-toon-sm);
 }
 
-input:focus, textarea:focus, select:focus{
-  outline: none;
-  box-shadow: 0 0 0 6px rgba(244,140,37,.18), var(--shadow-toon-sm);
+.btn:active, .iconbtn:active, .tab:active, .segbtn:active, .chip:active, .memberChip:active, .navbtn:active{
+  transform: translate(4px,4px) !important;
+  box-shadow: var(--sticker-shadow-hover) !important;
 }
 
-.chip, .pill, .badge{
-  border: 3px solid var(--outline);
-  box-shadow: var(--shadow-toon-sm);
-  border-radius: 999px;
-  font-weight: 900;
-}
-
-.topbar{
-  background: rgba(255,249,245,.9);
-  backdrop-filter: blur(10px);
-  border-bottom: 3px solid rgba(26,26,26,.08);
+.input, textarea{
+  border: var(--outline) !important;
+  border-radius: 999px !important;
+  box-shadow: var(--sticker-shadow) !important;
 }
 
 .avatar{
-  width:42px; height:42px;
-  border-radius: 18px;
-  background: #fff;
-  border: 3px solid var(--outline);
-  box-shadow: var(--shadow-toon-sm);
-  display:grid; place-items:center;
-  overflow:hidden;
+  border: var(--outline) !important;
+  border-radius: 22px !important;
+  background: #fff !important;
+  box-shadow: var(--sticker-shadow-hover) !important;
+  overflow: hidden;
 }
 
-.avatar.lg{ width:64px; height:64px; border-radius: 26px; }
-.avatar.sm{ width:34px; height:34px; border-radius: 14px; }
-
-.iconimg{
-  display:block;
-  width:100%;
-  height:100%;
+.avatar img{
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  display:block;
 }
 
-.rosieimg{
-  filter: drop-shadow(0 4px 0 rgba(0,0,0,.10));
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255,249,245,.92);
+  backdrop-filter: blur(10px);
 }
 
-.fab{
-  border: 3px solid var(--outline);
-  box-shadow: var(--shadow-toon);
-  background: var(--brand);
+.nav{
+  border: var(--outline) !important;
+  box-shadow: var(--sticker-shadow) !important;
+  border-radius: 36px !important;
+  background: #fff !important;
 }
-
-.fab:active{
-  transform: translate(4px,4px);
-  box-shadow: var(--shadow-pressed);
-}
-
-.toast{
-  border: 3px solid var(--outline);
-  box-shadow: var(--shadow-toon);
-  border-radius: 22px;
-}
-
