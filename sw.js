@@ -1,4 +1,4 @@
-const CACHE = 'rosie-cache-v25';
+const CACHE = 'rosie-cache-v26';
 const ASSETS = [
   './',
   './index.html',
