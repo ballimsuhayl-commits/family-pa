@@ -1,0 +1,60 @@
+{
+  "version": "r42-assets",
+  "rosie": {
+    "base": "assets/rosie/rosie.png",
+    "sizes": {
+      "512": "assets/rosie/rosie-512.png",
+      "192": "assets/rosie/rosie-192.png",
+      "32": "assets/rosie/rosie-32.png"
+    },
+    "expressions": {
+      "01-default-happy": "assets/rosie/expressions/01-default-happy.png",
+      "02-thinking": "assets/rosie/expressions/02-thinking.png",
+      "03-listening": "assets/rosie/expressions/03-listening.png",
+      "04-celebrating": "assets/rosie/expressions/04-celebrating.png",
+      "05-gentle-reminder": "assets/rosie/expressions/05-gentle-reminder.png",
+      "06-all-done-success": "assets/rosie/expressions/06-all-done-success.png",
+      "07-oops-mild-error": "assets/rosie/expressions/07-oops-mild-error.png",
+      "08-sleepy-quiet": "assets/rosie/expressions/08-sleepy-quiet.png",
+      "09-excited-new-event": "assets/rosie/expressions/09-excited-new-event.png",
+      "10-helpful-pointing": "assets/rosie/expressions/10-helpful-pointing.png",
+      "11-inbox-notification": "assets/rosie/expressions/11-inbox-notification.png",
+      "12-loading": "assets/rosie/expressions/12-loading.png"
+    }
+  },
+  "family": {
+    "nasima": "assets/family/nasima.png",
+    "suhayl": "assets/family/suhayl.png",
+    "zaara": "assets/family/zaara.png",
+    "rayhaan": "assets/family/rayhaan.png",
+    "jabu": "assets/family/jabu.png",
+    "lisa": "assets/family/lisa.png"
+  },
+  "icons": {
+    "home": "assets/icons/ui/home.svg",
+    "calendar": "assets/icons/ui/calendar.svg",
+    "inbox": "assets/icons/ui/inbox.svg",
+    "settings": "assets/icons/ui/settings.svg",
+    "add": "assets/icons/ui/add.svg",
+    "back": "assets/icons/ui/back.svg",
+    "mic": "assets/icons/ui/mic.svg",
+    "send": "assets/icons/ui/send.svg",
+    "search": "assets/icons/ui/search.svg",
+    "bell": "assets/icons/ui/bell.svg",
+    "checklist": "assets/icons/ui/checklist.svg",
+    "basket": "assets/icons/ui/basket.svg",
+    "edit": "assets/icons/ui/edit.svg",
+    "trash": "assets/icons/ui/trash.svg",
+    "export": "assets/icons/ui/export.svg",
+    "import": "assets/icons/ui/import.svg",
+    "link": "assets/icons/ui/link.svg"
+  },
+  "patterns": [
+    "assets/patterns/01-dots.png",
+    "assets/patterns/02-waves.png",
+    "assets/patterns/03-grain.png",
+    "assets/patterns/04-sparkles.png",
+    "assets/patterns/05-faint-blobs.png",
+    "assets/patterns/06-crosshatch.png"
+  ]
+}
