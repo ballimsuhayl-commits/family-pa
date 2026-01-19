@@ -99,7 +99,7 @@ function header(){
         el('div',{class:'sub', text:'Family Assistant'})
       ])
     ]),
-    el('button',{class:'pill small', onClick: ()=> setHash('#/calendar'), html: icons.calendar(18) + '<span>Calendar</span>'})
+    el('button',{class:'pill small', onClick: ()=> setHash('#/settings'), html: icons.gear(18) + '<span>More</span>'})
   ]);
 }
 
@@ -271,6 +271,8 @@ function listsPeek(state){
 function renderLists(state, render){
   const tasks = (state.tasks||[]).filter(t=>!t.done);
   const groceries = (state.groceries||[]).filter(g=>!g.done);
+  const hash = location.hash || '#/lists';
+  const activeTab = hash.includes('groceries') ? 'groceries' : 'tasks';
 
   const taskInput = el('input',{placeholder:'e.g. “Tell Jabu clean kitchen tomorrow”'});
   const addTask = el('button',{class:'pill primary', html: icons.plus(18)+'<span>Add</span>', onClick: ()=>{
@@ -332,28 +334,39 @@ function renderLists(state, render){
     ]);
   }) : [el('div',{class:'item'},[el('div',{class:'grow'},[el('h3',{text:'Grocery list is empty'}), el('p',{text:'Add items as you think of them.'})])])];
 
+  const tabs = el('div',{class:'segmented'},[
+    el('button',{class:'segbtn'+(activeTab==='tasks'?' active':''), onClick: ()=> setHash('#/lists')},['Tasks']),
+    el('button',{class:'segbtn'+(activeTab==='groceries'?' active':''), onClick: ()=> setHash('#/lists/groceries')},['Groceries'])
+  ]);
+
+  const tasksSection = el('div',{class:'section'},[
+    el('h2',{text:'Tasks'}),
+    el('div',{class:'quick'},[
+      el('div',{class:'input'},[ el('span',{html: icons.plus(18)}), taskInput ]),
+      addTask
+    ]),
+    el('div',{class:'card list'}, taskList)
+  ]);
+
+  const groceriesSection = el('div',{class:'section'},[
+    el('h2',{text:'Groceries'}),
+    el('div',{class:'quick'},[
+      el('div',{class:'input'},[ el('span',{html: icons.plus(18)}), grocInput ]),
+      addG
+    ]),
+    el('div',{class:'card list'}, grocList)
+  ]);
+
   return el('div',{class:'shell'},[
     header(),
     el('div',{class:'section'},[
-      el('h2',{text:'Tasks'}),
-      el('div',{class:'quick'},[
-        el('div',{class:'input'},[ el('span',{html: icons.list(18)}), taskInput ]),
-        addTask
-      ]),
-      el('div',{class:'card list'}, taskList)
+      el('h2',{text:'Lists'}),
+      tabs
     ]),
-    el('div',{class:'section'},[
-      el('h2',{text:'Groceries'}),
-      el('div',{class:'quick'},[
-        el('div',{class:'input'},[ el('span',{html: icons.plus(18)}), grocInput ]),
-        addG
-      ]),
-      el('div',{class:'card list'}, grocList)
-    ])
+    activeTab==='tasks' ? tasksSection : groceriesSection
   ]);
 }
 
-}
 
 function renderHome(state, render){
   return el('div',{class:'shell'},[
@@ -1081,8 +1094,7 @@ function nav(){
       mk('#/home','Home', (s)=>icons.rosie(s)),
       mk('#/calendar','Calendar', (s)=>icons.calendar(s)),
       mk('#/inbox','Inbox', (s)=>icons.list(s)),
-      mk('#/settings','Settings', (s)=>icons.gear(s))
-    ])
+      mk('#/lists','Lists', (s)=>icons.list(s))])
   ]);
 }
 
@@ -1194,10 +1206,56 @@ function ensureOverlays(state, render){
     `}));
   }
 
+
+  if(!document.getElementById('addsheet')){
+    const addsheet = el('div',{id:'addsheet', class:'sheet', html: `
+      <div class="panel">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <strong>Add</strong>
+          <button id="addClose" class="pill small">${icons.x(18)} Close</button>
+        </div>
+        <div class="list" style="margin-top:10px;">
+          <button id="addTaskBtn" class="pill full">${icons.plus(18)} Task</button>
+          <button id="addEventBtn" class="pill full">${icons.calendar(18)} Event</button>
+          <button id="addGrocBtn" class="pill full">${icons.plus(18)} Grocery</button>
+          <button id="addPasteBtn" class="pill full">${icons.list(18)} Paste / Message</button>
+          <button id="addVoiceBtn" class="pill full">${icons.mic(18)} Voice</button>
+        </div>
+      </div>
+    `});
+    addsheet.addEventListener('click', (e)=>{ if(e.target===addsheet) addsheet.classList.remove('open'); });
+    document.body.appendChild(addsheet);
+  }
+
   if(!document.getElementById('fab')){
-    const fab = el('button',{id:'fab', class:'fab', html: icons.mic(22), onClick: ()=> openVoiceSheet(state, render) });
+    const fab = el('button',{id:'fab', class:'fab', html: icons.plus(24), onClick: ()=> openAddSheet(state, render) });
     document.body.appendChild(fab);
   }
+}
+
+
+function openAddSheet(state, render){
+  const s = document.getElementById('addsheet');
+  if(!s) return;
+  s.classList.add('open');
+
+  const close = document.getElementById('addClose');
+  if(close) close.onclick = ()=> s.classList.remove('open');
+
+  const taskBtn = document.getElementById('addTaskBtn');
+  if(taskBtn) taskBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/lists'); setTimeout(()=>{ const i=document.querySelector('#app input[placeholder^="e.g. “Tell"]'); if(i) i.focus(); }, 50); };
+
+  const grocBtn = document.getElementById('addGrocBtn');
+  if(grocBtn) grocBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/lists/groceries'); setTimeout(()=>{ const i=document.querySelector('#app input[placeholder^="e.g. “Milk"]'); if(i) i.focus(); }, 50); };
+
+  const eventBtn = document.getElementById('addEventBtn');
+  if(eventBtn) eventBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/calendar'); toast('Tap + Add on Calendar'); };
+
+  const pasteBtn = document.getElementById('addPasteBtn');
+  if(pasteBtn) pasteBtn.onclick = ()=>{ s.classList.remove('open'); setHash('#/home'); setTimeout(()=>{ const ta=document.getElementById('capture'); if(ta) ta.focus(); }, 50); };
+
+  const voiceBtn = document.getElementById('addVoiceBtn');
+  if(voiceBtn) voiceBtn.onclick = ()=>{ s.classList.remove('open'); openVoiceSheet(state, render); };
 }
 
 function openVoiceSheet(state, render){

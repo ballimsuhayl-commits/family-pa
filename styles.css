@@ -302,144 +302,59 @@ hr.sep{border:none; border-top:1px solid rgba(17,24,39,.08); margin:10px 0}
 }
 
 
-/* =========================
-   Calendar UI (ITER22 baseline)
-   Safe: CSS-only, no JS changes
-   ========================= */
-
-.calHeader{
+/* Segmented control (Lists tabs) */
+.segmented{
   display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  padding-bottom:10px;
-  border-bottom: 1px solid rgba(17,24,39,.08);
-  margin-bottom:6px;
-}
-.calHeader .row{display:flex; gap:8px; align-items:center}
-
-.seg{
-  display:inline-flex;
-  border: 1px solid rgba(17,24,39,.10);
-  background: rgba(255,255,255,.60);
-  border-radius: 999px;
-  overflow:hidden;
-}
-.seg button{
-  border:0;
-  background: transparent;
-  min-height: 40px;
-  padding: 8px 12px;
-  font-weight:700;
-  color: var(--ink);
-  opacity:.75;
-  cursor:pointer;
-}
-.seg button.active{
-  background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(236,72,153,.12));
-  opacity: 1;
-}
-.seg button:active{ transform: scale(.98); }
-
-.calGrid{
-  display:grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap:6px;
-  padding: 10px 10px 0 10px;
-}
-.dayHead{
-  text-align:center;
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(17,24,39,.70);
-  padding: 6px 0;
-}
-
-#calBody{
-  display:grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap:6px;
-  padding: 6px 10px 10px 10px;
-}
-
-.dayCell{
-  width:100%;
-  text-align:left;
-  border: 1px solid rgba(17,24,39,.10);
-  background: rgba(255,255,255,.78);
-  border-radius: 14px;
-  padding: 10px 10px 8px 10px;
-  min-height: 66px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  cursor:pointer;
-}
-.dayCell:active{ transform: scale(.99); }
-
-.dayCell .d{
-  display:flex;
-  width:100%;
-  align-items:center;
-  justify-content:space-between;
-  font-weight: 800;
-  line-height: 1;
-}
-.dayCell .d span:last-child{
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(17,24,39,.55);
-}
-
-.dotRow{ display:flex; gap:4px; align-items:center; flex-wrap:wrap; margin-top:6px; }
-.dot{
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: var(--brand);
-  display:inline-block;
-}
-.dot.alt{ background: var(--ok); }
-.dot.warn{ background: var(--warn); }
-.dot.danger{ background: var(--bad); }
-
-.more{
-  margin-top: 6px;
-  font-size: 11px;
-  color: rgba(17,24,39,.55);
-}
-
-/* =========================
-   Pill controls (used across app)
-   ========================= */
-
-button.pill{
-  display:inline-flex;
-  align-items:center;
   gap:8px;
-  border: 1px solid rgba(17,24,39,.10);
-  background: rgba(255,255,255,.78);
-  color: var(--ink);
-  border-radius: 999px;
-  padding: 10px 14px;
-  min-height: var(--tap);
-  cursor:pointer;
-  font-weight:700;
+  background: rgba(0,0,0,0.04);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:14px;
+  padding:6px;
+  margin-top:10px;
 }
-button.pill.small{
-  padding: 8px 12px;
-  min-height: 40px;
-  font-size: 13px;
+.segbtn{
+  flex:1;
+  border:0;
+  background:transparent;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:600;
 }
-button.pill svg{ width:18px; height:18px; }
-button.pill:active{ transform: scale(.99); }
-
-input.pill, select.pill{
-  border: 1px solid rgba(17,24,39,.10);
-  background: rgba(255,255,255,.78);
-  color: var(--ink);
-  border-radius: 999px;
-  padding: 10px 12px;
-  min-height: var(--tap);
+.segbtn.active{
+  background:#fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
 }
 
+/* Full-width buttons inside sheets */
+.pill.full{
+  width:100%;
+  justify-content:flex-start;
+  gap:10px;
+  padding:12px 14px;
+  margin:6px 0;
+}
+
+
+/* Bottom sheet overlays */
+.sheet{
+  position: fixed;
+  inset: 0;
+  background: rgba(17,24,39,.35);
+  display: none;
+  z-index: 50;
+  padding: 14px;
+  align-items: flex-end;
+}
+.sheet.open{ display:flex; }
+.sheet .panel{
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+}
+.sheet .panel strong{font-size:16px}
