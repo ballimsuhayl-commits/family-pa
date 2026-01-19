@@ -1,23 +1,20 @@
-/* Rosie Service Worker — r41
-   - Never fails install if one file is missing
-   - Clears old caches
-   - Navigation fallback for SPA
-*/
-const CACHE = 'rosie-cache-r41';
+const CACHE = 'rosie-cache-__REV__';
 const ASSETS = [
+  './',
   './index.html',
-  './styles.css',
-  './manifest.webmanifest',
-  './app.js',
-  './calendar.js',
-  './icons.js',
-  './ics.js',
-  './main.js',
-  './parser.js',
-  './store.js',
-  './sw.js',
   './404.html',
-  './.nojekyll'
+  './styles.css',
+  './main.js',
+  './app.js',
+  './icons.js',
+  './store.js',
+  './calendar.js',
+  './parser.js',
+  './ics.js',
+  './manifest.webmanifest',
+  './assets/rosie.png',
+  './assets/icons/rosie-192.png',
+  './assets/icons/rosie-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -28,7 +25,9 @@ self.addEventListener('install', (event) => {
         const req = new Request(url, { cache: 'reload' });
         const res = await fetch(req);
         if (res && res.ok) await cache.put(req, res.clone());
-      } catch (_) {}
+      } catch (e) {
+        // Never block install
+      }
     }));
     await self.skipWaiting();
   })());
@@ -40,6 +39,10 @@ self.addEventListener('activate', (event) => {
     await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
     await self.clients.claim();
   })());
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
