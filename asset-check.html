@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rosie Asset Check</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial; padding:16px; max-width:820px; margin:0 auto;}
+    code{background:#f5f5f5; padding:2px 6px; border-radius:6px;}
+    .ok{color:green} .bad{color:#b00020}
+    img{max-width:120px; max-height:120px; border:1px solid #ddd; border-radius:12px; padding:6px; background:#fff;}
+    ul{line-height:1.7}
+  </style>
+</head>
+<body>
+  <h1>Rosie Asset Check</h1>
+  <p>If anything below shows <span class="bad">404</span>, the files were not committed/deployed.</p>
+  <ul id="list"></ul>
+
+  <script type="module">
+    const files = ["./assets/rosie.png", "./assets/icons/rosie-192.png", "./assets/icons/rosie-512.png", "./assets/family/nasima.png", "./assets/family/suhayl.png", "./assets/family/zaara.png", "./assets/family/rayhaan.png", "./assets/family/jabu.png", "./assets/family/lisa.png"];
+    const ul = document.getElementById('list');
+
+    async function head(url){
+      try{
+        const res = await fetch(url, {method:'GET', cache:'no-store'});
+        return res.ok ? 'OK' : String(res.status);
+      }catch(e){ return 'ERR'; }
+    }
+
+    for(const f of files){
+      const url = new URL(f, document.baseURI).toString();
+      const li = document.createElement('li');
+      li.innerHTML = `<code>${f}</code> → <span>checking…</span>`;
+      ul.appendChild(li);
+      const status = await head(url);
+      const span = li.querySelector('span');
+      span.textContent = status;
+      span.className = status === 'OK' ? 'ok' : 'bad';
+      if(status === 'OK' && f.endsWith('.png')){
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = f;
+        li.appendChild(document.createTextNode(' '));
+        li.appendChild(img);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -31,3 +31,18 @@ Stored in `localStorage` under `rosie.v14.state`. On first run it migrates from 
 
 ## Service Worker cache
 If you ever see a blank screen after an update, it is usually a cached Service Worker. This build uses `rosie-cache-v22` and auto-refreshes when updated.
+
+
+## Fixing missing icons on GitHub Pages
+If you ever see 404s for `assets/rosie.png` or `assets/icons/rosie-192.png`, it means the assets were not deployed.
+
+### Quick verification
+Open:
+- `https://<user>.github.io/<repo>/asset-check.html`
+
+Everything must show **OK**.
+
+### Common causes
+- You uploaded files into a subfolder instead of repo root.
+- GitHub Pages is deploying an older branch.
+- Browser still uses an old Service Worker cache (see TROUBLESHOOT.md).

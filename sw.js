@@ -1,4 +1,4 @@
-const CACHE = 'rosie-cache-ghpages-v36';
+const CACHE = 'rosie-cache-ghpages-v37';
 const ASSETS = [
   './',
   './index.html',
