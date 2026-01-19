@@ -936,7 +936,7 @@ async function syncInbox(state, render){
   }
 }
 
-function renderSettings(state, render){(state, render){
+function renderSettings(state, render){
   const s = state.settings;
 
   const bridgeUrl = el('input',{value: s.bridgeUrl||'', placeholder:'https://<worker-domain>'});
